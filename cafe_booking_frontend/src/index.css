@@ -1,2 +1,20 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+    themes: light --default dark --prefersdark all;
+    prefix: "d-";
+};
+
+@plugin "daisyui/theme" {
+    name: "restaurant";
+    default: false;
+    color-scheme: light;
+
+
+}
+
+.d-btn-primary{
+    background-color: #8B6F47;
+    border: none;
+    color: white;
+    box-shadow: 0 0 2px #c39d69;
+}
