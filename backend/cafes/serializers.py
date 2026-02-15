@@ -1,6 +1,7 @@
 # apps/cafes/serializers.py
 
 from rest_framework import serializers
+from drf_spectacular.utils import OpenApiTypes, extend_schema_field
 from .models import Restaurant, Location, Table, TimeSlot
 
 
@@ -23,6 +24,7 @@ class RestaurantListSerializer(serializers.ModelSerializer):
             'locations_count',
         ]
     
+    @extend_schema_field(OpenApiTypes.INT)
     def get_locations_count(self, obj):
         """Количество активных локаций"""
         return obj.locations.filter(is_active=True).count()
@@ -53,6 +55,7 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
     
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_locations(self, obj):
         """Список локаций ресторана"""
         locations = obj.locations.filter(is_active=True)
@@ -80,6 +83,7 @@ class LocationListSerializer(serializers.ModelSerializer):
             'tables_count',
         ]
     
+    @extend_schema_field(OpenApiTypes.INT)
     def get_tables_count(self, obj):
         """Количество активных столиков"""
         return obj.tables.filter(is_active=True).count()
@@ -110,11 +114,13 @@ class LocationDetailSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
     
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_tables(self, obj):
         """Список столиков локации"""
         tables = obj.tables.filter(is_active=True)
         return TableSerializer(tables, many=True).data
     
+    @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_time_slots(self, obj):
         """Доступные временные слоты"""
         slots = obj.time_slots.filter(is_active=True)

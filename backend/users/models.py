@@ -82,3 +82,17 @@ class Customer(models.Model):
             - self.no_show_count
         )
         return round((completed / self.total_bookings) * 100, 2)
+
+class RestaurantStaff(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='staff_profile',
+        primary_key=True
+    )
+
+    staff_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Staff {self.user.phone_number}"

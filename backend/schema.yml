@@ -1,0 +1,1966 @@
+openapi: 3.0.3
+info:
+  title: Diploma Cafe Booking API
+  version: 1.0.0
+  description: API documentation for authentication, cafe catalog, and booking flows.
+paths:
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      summary: Login and get JWT token pair
+      tags:
+      - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PhoneTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PhoneTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneTokenObtainPair'
+          description: ''
+  /api/auth/profile/:
+    get:
+      operationId: auth_profile_retrieve
+      summary: Get current user profile
+      tags:
+      - Auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      summary: Register new user account
+      tags:
+      - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/auth/test/:
+    get:
+      operationId: auth_test_retrieve
+      summary: Test protected endpoint
+      tags:
+      - Auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestProtectedResponse'
+          description: ''
+  /api/bookings/:
+    get:
+      operationId: bookings_list
+      summary: List current user bookings
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+          description: ''
+    post:
+      operationId: bookings_create
+      summary: Create a booking
+      tags:
+      - Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingCreate'
+          description: ''
+  /api/bookings/{booking_id}/:
+    get:
+      operationId: bookings_retrieve
+      summary: Get booking details
+      parameters:
+      - in: path
+        name: booking_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+  /api/bookings/{booking_id}/cancel/:
+    post:
+      operationId: bookings_cancel_create
+      summary: Cancel a booking
+      parameters:
+      - in: path
+        name: booking_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCancel'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingCancel'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingCancel'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingCancel'
+          description: ''
+  /api/bookings/availability/:
+    get:
+      operationId: bookings_availability_retrieve
+      summary: Check booking availability
+      parameters:
+      - in: query
+        name: booking_date
+        schema:
+          type: string
+          format: date
+        required: true
+      - in: query
+        name: booking_time
+        schema:
+          type: string
+          format: time
+        required: true
+      - in: query
+        name: duration_minutes
+        schema:
+          type: integer
+      - in: query
+        name: location
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: number_of_guests
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+  /api/cafes/locations/:
+    get:
+      operationId: cafes_locations_list
+      summary: List locations
+      parameters:
+      - in: query
+        name: city
+        schema:
+          type: string
+      - in: query
+        name: restaurant
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationList'
+          description: ''
+    post:
+      operationId: cafes_locations_create
+      summary: Create location
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCreate'
+          description: ''
+  /api/cafes/locations/{location_id}/:
+    get:
+      operationId: cafes_locations_retrieve
+      summary: Get location details
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDetail'
+          description: ''
+    put:
+      operationId: cafes_locations_update
+      summary: Update location
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LocationCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCreate'
+          description: ''
+    patch:
+      operationId: cafes_locations_partial_update
+      summary: Partial update location
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Locations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLocationCreate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCreate'
+          description: ''
+    delete:
+      operationId: cafes_locations_destroy
+      summary: Delete location
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cafes/locations/{location_id}/tables/:
+    get:
+      operationId: cafes_locations_tables_retrieve
+      summary: List tables in location
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      - in: query
+        name: max_capacity
+        schema:
+          type: integer
+      - in: query
+        name: min_capacity
+        schema:
+          type: integer
+      - in: query
+        name: table_type
+        schema:
+          type: string
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationList'
+          description: ''
+  /api/cafes/locations/{location_id}/time_slots/:
+    get:
+      operationId: cafes_locations_time_slots_retrieve
+      summary: List time slots in location
+      parameters:
+      - in: path
+        name: location_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Locations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationList'
+          description: ''
+  /api/cafes/restaurants/:
+    get:
+      operationId: cafes_restaurants_list
+      summary: List restaurants
+      parameters:
+      - in: query
+        name: city
+        schema:
+          type: string
+      - in: query
+        name: cuisine_type
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Restaurants
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RestaurantList'
+          description: ''
+    post:
+      operationId: cafes_restaurants_create
+      summary: Create restaurant
+      tags:
+      - Restaurants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantCreate'
+          description: ''
+  /api/cafes/restaurants/{restaurant_id}/:
+    get:
+      operationId: cafes_restaurants_retrieve
+      summary: Get restaurant details
+      parameters:
+      - in: path
+        name: restaurant_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Restaurants
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantDetail'
+          description: ''
+    put:
+      operationId: cafes_restaurants_update
+      summary: Update restaurant
+      parameters:
+      - in: path
+        name: restaurant_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Restaurants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RestaurantCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantCreate'
+          description: ''
+    patch:
+      operationId: cafes_restaurants_partial_update
+      summary: Partial update restaurant
+      parameters:
+      - in: path
+        name: restaurant_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Restaurants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRestaurantCreate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantCreate'
+          description: ''
+    delete:
+      operationId: cafes_restaurants_destroy
+      summary: Delete restaurant
+      parameters:
+      - in: path
+        name: restaurant_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Restaurants
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cafes/restaurants/{restaurant_id}/locations/:
+    get:
+      operationId: cafes_restaurants_locations_retrieve
+      summary: List locations of a restaurant
+      parameters:
+      - in: path
+        name: restaurant_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Restaurants
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantList'
+          description: ''
+  /api/cafes/tables/:
+    get:
+      operationId: cafes_tables_list
+      summary: List tables
+      parameters:
+      - in: query
+        name: is_available
+        schema:
+          type: boolean
+      - in: query
+        name: location
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: table_type
+        schema:
+          type: string
+          title: Тип Столика
+          enum:
+          - bar
+          - indoor
+          - outdoor
+          - private
+          - terrace
+          - vip
+        description: |-
+          * `indoor` - Indoor
+          * `outdoor` - Outdoor
+          * `vip` - VIP
+          * `terrace` - Terrace
+          * `bar` - Bar Seating
+          * `private` - Private Room
+      tags:
+      - Tables
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Table'
+          description: ''
+    post:
+      operationId: cafes_tables_create
+      summary: Create table
+      tags:
+      - Tables
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableCreate'
+          description: ''
+  /api/cafes/tables/{table_id}/:
+    get:
+      operationId: cafes_tables_retrieve
+      summary: Get table details
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Tables
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+          description: ''
+    put:
+      operationId: cafes_tables_update
+      summary: Update table
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Tables
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TableCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableCreate'
+          description: ''
+    patch:
+      operationId: cafes_tables_partial_update
+      summary: Partial update table
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Tables
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTableCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTableCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTableCreate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableCreate'
+          description: ''
+    delete:
+      operationId: cafes_tables_destroy
+      summary: Delete table
+      parameters:
+      - in: path
+        name: table_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Tables
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cafes/tables/{table_id}/availability/:
+    get:
+      operationId: cafes_tables_availability_retrieve
+      summary: Check table availability
+      parameters:
+      - in: query
+        name: date
+        schema:
+          type: string
+          format: date
+        required: true
+      - in: query
+        name: duration
+        schema:
+          type: integer
+      - in: path
+        name: table_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      - in: query
+        name: time
+        schema:
+          type: string
+          format: time
+        required: true
+      tags:
+      - Tables
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+          description: ''
+  /api/cafes/time-slots/:
+    get:
+      operationId: cafes_time_slots_list
+      summary: List time slots
+      parameters:
+      - in: query
+        name: location
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - Time Slots
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeSlot'
+          description: ''
+    post:
+      operationId: cafes_time_slots_create
+      summary: Create time slot
+      tags:
+      - Time Slots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlotCreate'
+          description: ''
+  /api/cafes/time-slots/{time_slot_id}/:
+    get:
+      operationId: cafes_time_slots_retrieve
+      summary: Get time slot details
+      parameters:
+      - in: path
+        name: time_slot_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Time Slots
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlot'
+          description: ''
+    put:
+      operationId: cafes_time_slots_update
+      summary: Update time slot
+      parameters:
+      - in: path
+        name: time_slot_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Time Slots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TimeSlotCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlotCreate'
+          description: ''
+    patch:
+      operationId: cafes_time_slots_partial_update
+      summary: Partial update time slot
+      parameters:
+      - in: path
+        name: time_slot_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Time Slots
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTimeSlotCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTimeSlotCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTimeSlotCreate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSlotCreate'
+          description: ''
+    delete:
+      operationId: cafes_time_slots_destroy
+      summary: Delete time slot
+      parameters:
+      - in: path
+        name: time_slot_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Time Slots
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Booking:
+      type: object
+      properties:
+        booking_id:
+          type: string
+          format: uuid
+          readOnly: true
+        booking_number:
+          type: string
+          readOnly: true
+        customer:
+          type: integer
+          readOnly: true
+        restaurant:
+          type: string
+          format: uuid
+        location:
+          type: string
+          format: uuid
+        table:
+          type: string
+          format: uuid
+          nullable: true
+        booking_date:
+          type: string
+          format: date
+        booking_time:
+          type: string
+          format: time
+        number_of_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        duration_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        special_request:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        confirmed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        cancelled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        cancellation_reason:
+          type: string
+          readOnly: true
+      required:
+      - booking_date
+      - booking_id
+      - booking_number
+      - booking_time
+      - cancellation_reason
+      - cancelled_at
+      - completed_at
+      - confirmed_at
+      - created_at
+      - customer
+      - location
+      - number_of_guests
+      - restaurant
+      - status
+      - updated_at
+    BookingCancel:
+      type: object
+      properties:
+        cancellation_reason:
+          type: string
+          maxLength: 1000
+    BookingCreate:
+      type: object
+      properties:
+        restaurant:
+          type: string
+          format: uuid
+        location:
+          type: string
+          format: uuid
+        table:
+          type: string
+          format: uuid
+          nullable: true
+        booking_date:
+          type: string
+          format: date
+        booking_time:
+          type: string
+          format: time
+          description: 'Accepted: HH:MM, HH:MM:SS, HH:MM:SS.sss or HH:MM:SS.sssZ'
+        number_of_guests:
+          type: integer
+          minimum: 1
+        duration_minutes:
+          type: integer
+          minimum: 30
+          default: 120
+        special_request:
+          type: string
+      required:
+      - booking_date
+      - booking_time
+      - location
+      - number_of_guests
+    LocationCreate:
+      type: object
+      description: Сериализатор для создания локации
+      properties:
+        restaurant:
+          type: string
+          format: uuid
+          title: Ресторан
+        address:
+          type: string
+          title: Полный Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        opening_hours:
+          type: string
+          title: Часы Работы
+          description: 'Например: Пн-Пт 10:00-22:00, Сб-Вс 11:00-23:00'
+          maxLength: 200
+      required:
+      - address
+      - opening_hours
+      - restaurant
+    LocationDetail:
+      type: object
+      description: Детальный сериализатор локации
+      properties:
+        location_id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant:
+          allOf:
+          - $ref: '#/components/schemas/RestaurantList'
+          readOnly: true
+        address:
+          type: string
+          title: Полный Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        opening_hours:
+          type: string
+          title: Часы Работы
+          description: 'Например: Пн-Пт 10:00-22:00, Сб-Вс 11:00-23:00'
+          maxLength: 200
+        total_capacity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Общая Вместимость
+          description: Рассчитывается автоматически из столиков
+        is_active:
+          type: boolean
+          title: Активна
+        tables:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        time_slots:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - created_at
+      - location_id
+      - opening_hours
+      - restaurant
+      - tables
+      - time_slots
+      - updated_at
+    LocationList:
+      type: object
+      description: Сериализатор списка локаций
+      properties:
+        location_id:
+          type: string
+          format: uuid
+          readOnly: true
+        restaurant_name:
+          type: string
+          readOnly: true
+        address:
+          type: string
+          title: Полный Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        opening_hours:
+          type: string
+          title: Часы Работы
+          description: 'Например: Пн-Пт 10:00-22:00, Сб-Вс 11:00-23:00'
+          maxLength: 200
+        total_capacity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Общая Вместимость
+          description: Рассчитывается автоматически из столиков
+        is_active:
+          type: boolean
+          title: Активна
+        tables_count:
+          type: integer
+          description: Количество активных столиков
+          readOnly: true
+      required:
+      - address
+      - location_id
+      - opening_hours
+      - restaurant_name
+      - tables_count
+    PatchedLocationCreate:
+      type: object
+      description: Сериализатор для создания локации
+      properties:
+        restaurant:
+          type: string
+          format: uuid
+          title: Ресторан
+        address:
+          type: string
+          title: Полный Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        opening_hours:
+          type: string
+          title: Часы Работы
+          description: 'Например: Пн-Пт 10:00-22:00, Сб-Вс 11:00-23:00'
+          maxLength: 200
+    PatchedRestaurantCreate:
+      type: object
+      description: Сериализатор для создания ресторана
+      properties:
+        name:
+          type: string
+          title: Название Ресторана
+          maxLength: 200
+        description:
+          type: string
+          title: Описание
+        cuisine_type:
+          type: string
+          title: Тип Кухни
+          description: 'Например: Итальянская, Казахская, Азиатская'
+          maxLength: 100
+        address:
+          type: string
+          title: Основной Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Широта
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Долгота
+        images:
+          title: URLs Изображений
+          description: Массив URL изображений
+    PatchedTableCreate:
+      type: object
+      description: Сериализатор для создания столика
+      properties:
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        table_number:
+          type: string
+          title: Номер Столика
+          description: 'Например: T1, A5, VIP-3'
+          maxLength: 10
+        table_type:
+          allOf:
+          - $ref: '#/components/schemas/TableTypeEnum'
+          title: Тип Столика
+        min_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Минимум Гостей
+        max_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Гостей
+        position_x:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: X Позиция на Плане
+        position_y:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: Y Позиция на Плане
+        description:
+          type: string
+          title: Описание
+          description: Особенности, вид и т.д.
+    PatchedTimeSlotCreate:
+      type: object
+      description: Сериализатор для создания временного слота
+      properties:
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        start_time:
+          type: string
+          format: time
+          title: Время Начала
+        end_time:
+          type: string
+          format: time
+          title: Время Окончания
+        duration:
+          type: string
+          title: Длительность
+          description: 'Например: "2 часа", "90 минут"'
+          maxLength: 50
+        days_of_week:
+          title: Активные Дни
+          description: 'Список названий дней: ["Monday", "Tuesday", ...]'
+        max_bookings:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Бронирований на Слот
+    PhoneTokenObtainPair:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - phone_number
+    Profile:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          maxLength: 20
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - first_name
+      - last_name
+      - phone_number
+    Register:
+      type: object
+      properties:
+        phone_number:
+          type: string
+          maxLength: 20
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - first_name
+      - last_name
+      - password
+      - phone_number
+    RestaurantCreate:
+      type: object
+      description: Сериализатор для создания ресторана
+      properties:
+        name:
+          type: string
+          title: Название Ресторана
+          maxLength: 200
+        description:
+          type: string
+          title: Описание
+        cuisine_type:
+          type: string
+          title: Тип Кухни
+          description: 'Например: Итальянская, Казахская, Азиатская'
+          maxLength: 100
+        address:
+          type: string
+          title: Основной Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Широта
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Долгота
+        images:
+          title: URLs Изображений
+          description: Массив URL изображений
+      required:
+      - address
+      - cuisine_type
+      - name
+    RestaurantDetail:
+      type: object
+      description: Детальный сериализатор ресторана
+      properties:
+        restaurant_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          title: Название Ресторана
+          maxLength: 200
+        description:
+          type: string
+          title: Описание
+        cuisine_type:
+          type: string
+          title: Тип Кухни
+          description: 'Например: Итальянская, Казахская, Азиатская'
+          maxLength: 100
+        address:
+          type: string
+          title: Основной Адрес
+        city:
+          type: string
+          maxLength: 100
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Широта
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+          title: Долгота
+        images:
+          title: URLs Изображений
+          description: Массив URL изображений
+        rating:
+          type: number
+          format: double
+          maximum: 5.0
+          minimum: 0.0
+          title: Средний Рейтинг
+        total_reviews:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Всего Отзывов
+        is_active:
+          type: boolean
+          title: Активен
+        locations:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Создан
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Обновлен
+      required:
+      - address
+      - created_at
+      - cuisine_type
+      - locations
+      - name
+      - restaurant_id
+      - updated_at
+    RestaurantList:
+      type: object
+      description: Сериализатор для списка ресторанов (упрощенный)
+      properties:
+        restaurant_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          title: Название Ресторана
+          maxLength: 200
+        cuisine_type:
+          type: string
+          title: Тип Кухни
+          description: 'Например: Итальянская, Казахская, Азиатская'
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        rating:
+          type: number
+          format: double
+          maximum: 5.0
+          minimum: 0.0
+          title: Средний Рейтинг
+        total_reviews:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          title: Всего Отзывов
+        images:
+          title: URLs Изображений
+          description: Массив URL изображений
+        is_active:
+          type: boolean
+          title: Активен
+        locations_count:
+          type: integer
+          description: Количество активных локаций
+          readOnly: true
+      required:
+      - cuisine_type
+      - locations_count
+      - name
+      - restaurant_id
+    StatusEnum:
+      enum:
+      - pending
+      - confirmed
+      - seated
+      - completed
+      - cancelled
+      - no_show
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `confirmed` - Confirmed
+        * `seated` - Seated
+        * `completed` - Completed
+        * `cancelled` - Cancelled
+        * `no_show` - No Show
+    Table:
+      type: object
+      description: Сериализатор столика
+      properties:
+        table_id:
+          type: string
+          format: uuid
+          readOnly: true
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        location_name:
+          type: string
+          readOnly: true
+        table_number:
+          type: string
+          title: Номер Столика
+          description: 'Например: T1, A5, VIP-3'
+          maxLength: 10
+        table_type:
+          allOf:
+          - $ref: '#/components/schemas/TableTypeEnum'
+          title: Тип Столика
+        min_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Минимум Гостей
+        max_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Гостей
+        capacity:
+          type: integer
+          readOnly: true
+          title: Вместимость (устаревшее поле)
+        position_x:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: X Позиция на Плане
+        position_y:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: Y Позиция на Плане
+        description:
+          type: string
+          title: Описание
+          description: Особенности, вид и т.д.
+        is_available:
+          type: boolean
+          title: Сейчас Доступен
+        is_active:
+          type: boolean
+          title: Активен (не на ремонте)
+      required:
+      - capacity
+      - location
+      - location_name
+      - max_guests
+      - table_id
+      - table_number
+    TableCreate:
+      type: object
+      description: Сериализатор для создания столика
+      properties:
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        table_number:
+          type: string
+          title: Номер Столика
+          description: 'Например: T1, A5, VIP-3'
+          maxLength: 10
+        table_type:
+          allOf:
+          - $ref: '#/components/schemas/TableTypeEnum'
+          title: Тип Столика
+        min_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Минимум Гостей
+        max_guests:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Гостей
+        position_x:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: X Позиция на Плане
+        position_y:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          nullable: true
+          title: Y Позиция на Плане
+        description:
+          type: string
+          title: Описание
+          description: Особенности, вид и т.д.
+      required:
+      - location
+      - max_guests
+      - table_number
+    TableTypeEnum:
+      enum:
+      - indoor
+      - outdoor
+      - vip
+      - terrace
+      - bar
+      - private
+      type: string
+      description: |-
+        * `indoor` - Indoor
+        * `outdoor` - Outdoor
+        * `vip` - VIP
+        * `terrace` - Terrace
+        * `bar` - Bar Seating
+        * `private` - Private Room
+    TestProtectedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          type: string
+      required:
+      - message
+      - user
+    TimeSlot:
+      type: object
+      description: Сериализатор временного слота
+      properties:
+        time_slot_id:
+          type: string
+          format: uuid
+          readOnly: true
+          title: TimeSlot ID
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        start_time:
+          type: string
+          format: time
+          title: Время Начала
+        end_time:
+          type: string
+          format: time
+          title: Время Окончания
+        duration:
+          type: string
+          title: Длительность
+          description: 'Например: "2 часа", "90 минут"'
+          maxLength: 50
+        duration_minutes:
+          type: integer
+          readOnly: true
+        days_of_week:
+          title: Активные Дни
+          description: 'Список названий дней: ["Monday", "Tuesday", ...]'
+        max_bookings:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Бронирований на Слот
+        is_active:
+          type: boolean
+          title: Активен
+      required:
+      - duration
+      - duration_minutes
+      - end_time
+      - location
+      - start_time
+      - time_slot_id
+    TimeSlotCreate:
+      type: object
+      description: Сериализатор для создания временного слота
+      properties:
+        location:
+          type: string
+          format: uuid
+          title: Локация
+        start_time:
+          type: string
+          format: time
+          title: Время Начала
+        end_time:
+          type: string
+          format: time
+          title: Время Окончания
+        duration:
+          type: string
+          title: Длительность
+          description: 'Например: "2 часа", "90 минут"'
+          maxLength: 50
+        days_of_week:
+          title: Активные Дни
+          description: 'Список названий дней: ["Monday", "Tuesday", ...]'
+        max_bookings:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 1
+          format: int64
+          title: Максимум Бронирований на Слот
+      required:
+      - duration
+      - end_time
+      - location
+      - start_time
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
