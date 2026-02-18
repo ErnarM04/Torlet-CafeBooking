@@ -18,3 +18,63 @@
     color: white;
     box-shadow: 0 0 2px #c39d69;
 }
+
+.d-badge{
+    user-select: none;
+    border-radius: 14px;
+    font-size: 12px;
+    padding: 2px 8px;
+}
+
+.d-badge-pending{
+    background-color: #F3F4F6;
+    border: 1px #D1D5DC solid;
+    color: #364153;
+}
+
+.d-badge-success{
+    border: #7BF1A8 solid 1px;
+    background-color: #DCFCE7;
+    color: #008236;
+}
+
+.d-badge-declined {
+    border: #F9A8B6 solid 1px; 
+    background-color: #FEE2E2; 
+    color: #B91C1C; 
+}
+
+.d-badge-preparing{
+    border: #FFB86A solid 1px;
+    background-color: #FFEDD4;
+    color: #CA3500;
+}
+
+.d-table{
+    font-size: 14px;
+    font-weight: 500;
+    background-color: white;
+}
+
+.d-table thead{
+    color: #7A7269;
+}
+
+.d-table tbody{
+    color: #3D3935;
+}
+
+.d-table-untitled{
+    font-size: 16px;
+    border: rgba(139, 111, 71, .15) solid 1px;
+    border-radius: 16px;
+}
+
+.d-table-untitled thead{
+    background-color: #F5EFE7;
+}
+
+.d-table-untitled .addition{
+    color: #7A7269;
+    font-size: 14px;
+}
