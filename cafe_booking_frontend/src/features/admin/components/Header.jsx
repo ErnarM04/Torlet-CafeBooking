@@ -2,10 +2,10 @@ import React from "react";
 import "../../../App.css";
 import { Bot, Bell, User } from "lucide-react";
 
-function Header(){
+function Header({title}){
     return (
-        <div className="flex justify-between bg-white border border-[#8B6F47] p-8 pt-4 pb-4 items-center">
-            <p className="text-[#3D3935] text-2xl font-semibold select-none">Dashboard</p>
+        <div className="min-w-full flex justify-between bg-white border border-[#8B6F47]/15 p-8 pt-4 pb-4 items-center">
+            <p className="text-[#3D3935] text-3xl font-semibold select-none">{title}</p>
             <div className="flex items-center gap-4">
                 <button className="d-btn d-btn-primary rounded-xl flex flex-row p-4 gap-2">
                     <Bot/>

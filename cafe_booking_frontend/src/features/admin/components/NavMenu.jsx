@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Coffee, LayoutDashboard, Calendar, ShoppingBag, Users, ChartColumn, Settings } from "lucide-react";
+import { Link } from "react-router";
 
-function NavMenu(){
+function NavMenu({setTitle}){
 
     const [selected, setSelected] = useState("Dashboard");
 
@@ -14,6 +15,11 @@ function NavMenu(){
         ["Settings", Settings]
     ])
 
+    function select(name){
+        setSelected(name);
+        setTitle(name);
+    }
+
     function selectedItem(name, Icon){
         return (
             <div className="flex bg-[#8B6F47] rounded-xl items-start gap-3 p-3 cursor-pointer">
@@ -24,22 +30,22 @@ function NavMenu(){
     }
 
     return (
-        <div className="w-fit bg-white">
-            <div className="flex border border-[#8B6F47] gap-2 p-6">
+        <div className="w-full max-w-64 bg-white">
+            <div className="flex border border-[#8B6F47]/15 gap-2 p-6">
                 <Coffee className="bg-[#8B6F47] w-10 h-10 rounded-xl p-2" color="white"/>
                 <div className="flex flex-col items-start">
                     <p className="text-base text-[#3D3935] font-semibold">CafeAdmin</p>
                     <p className="text-xs text-[#7A7269]">Booking Management</p>
                 </div>
             </div>
-            <div className="flex flex-col h-max gap-1 p-4 border border-[#8B6F47]">
+            <div className="flex flex-col h-max gap-1 p-4 border border-[#8B6F47]/15">
                 {[...pages].map(([name, Icon]) => (
                     name != selected ?
-                    <div className="flex items-start gap-3 p-3 cursor-pointer" onClick={() => setSelected(name)}>
+                    <Link className="flex items-center justify-start gap-3 p-3 cursor-pointer" to={"/admin/"+name.toLowerCase()} onClick={() => select(name)}>
                         <Icon className="w-5 h-5" />
                         <p className="text-base ">{name}</p>
-                    </div> :
-                    <div className="flex bg-[#8B6F47] rounded-xl items-start gap-3 p-3 cursor-pointer">
+                    </Link> :
+                    <div className="flex bg-[#8B6F47] rounded-xl items-center justify-start gap-3 p-3 cursor-pointer">
                         <Icon className="w-5 h-5" color="white" />
                         <p className="text-base text-white">{name}</p>
                     </div>
