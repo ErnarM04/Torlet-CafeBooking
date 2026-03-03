@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Coffee } from "lucide-react";
+import useAuth from "../../../hooks/useAuth";
+import { Link, useNavigate } from "react-router";
 
 function Login(){
+
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [password, setPassword] = useState("");
+
+    const navigate = useNavigate();
+
+    const login = useAuth((state) => state.login);
+    const isLoggedIn = useAuth((state) => state.isLoggedIn);
+
+
     return (
-        <div className="flex flex-col w-full h-screen items-center justify-center gap-8 bg-[#FAF7F2]">
+        <div className="flex flex-1 flex-col w-full items-center justify-center gap-8 bg-[#FAF7F2]">
             <div className="flex flex-col items-center">
                 <div className="flex flex-row gap-3 items-center">
                     <Coffee className="p-3 bg-[#8B6F47] rounded-full" size={56} color="white"/>
@@ -13,17 +25,31 @@ function Login(){
             </div>
             <div className="w-84 flex flex-col gap-6.75 shadow rounded-2xl p-8 border border-[#E8DFD0] bg-white">
                 <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <p className="text-[#5D4E37] text-sm text-start">Email Address</p>
-                        <input className="d-input w-full rounded-[14px] px-4 py-3 text-base border border-[#E8DFD0]" type="email" placeholder="abc123@gmail.com"/>
-                    </div>
-                    <div className="flex flex-col gap-2 ">
-                        <p className="text-[#5D4E37] text-sm text-start">Password</p>
-                        <input className="d-input w-full rounded-[14px] px-4 py-3 text-base border border-[#E8DFD0]" type="password" placeholder="Password"/>
-                    </div>
-                    <button className="rounded-[14px] h-12 text-white bg-[#8B6F47] text-base">Sign In</button>
+                        <fieldset className="d-fieldset">
+                            <legend className="d-fieldset-legend text-[#5D4E37] text-sm font-medium">Email Address or Phone Number</legend>
+                            <input 
+                            className="d-input w-full px-4 py-2.5 bg-white rounded-[14px] border-[#E8DFD0] text-base text-[#3D3935] outline-[#E8DFD0]" 
+                            type="email" placeholder="abc123@gmail.com"
+                            onChange={(e) => setPhoneNumber(e.target.value)}/>
+                        </fieldset>
+                        <fieldset className="d-fieldset">
+                            <legend className="d-fieldset-legend text-[#5D4E37] text-sm font-medium">Password</legend>
+                            <input 
+                            className="d-input w-full px-4 py-2.5 bg-white rounded-[14px] border-[#E8DFD0] text-base text-[#3D3935] outline-[#E8DFD0]" 
+                            type="password" placeholder="Password"
+                            onChange={(e) => setPassword(e.target.value)}/>
+                        </fieldset>
+                    <button 
+                    className="rounded-[14px] h-12 text-white bg-[#8B6F47] text-base"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        if (login(phoneNumber, password)){
+                            navigate("/customer/");
+                        }
+                    }}
+                    >Sign In</button>
                 </div>
-                <p className="text-sm text-[#8B6F47] cursor-pointer">Don't have an account? Sign Up</p>
+                <Link to="/customer/register" className="text-sm text-[#8B6F47] cursor-pointer">Don't have an account? Sign Up</Link>
             </div>
         </div>
     );

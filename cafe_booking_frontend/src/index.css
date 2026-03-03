@@ -12,6 +12,10 @@
 
 }
 
+p, button{
+    font-family: 'Arimo';
+}
+
 .d-btn-primary{
     background-color: #8B6F47;
     border: none;

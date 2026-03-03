@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './App.css'
-import Admin from "./Admin";
+import Admin from "./routes/Admin";
 import { BrowserRouter, Routes, Route } from "react-router";
-import Customer from "./Customer";
+import Customer from "./routes/Customer";
 
 
 function App() {
+
   return (
     <BrowserRouter>
       <div>

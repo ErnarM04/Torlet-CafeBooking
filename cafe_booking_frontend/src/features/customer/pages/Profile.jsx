@@ -1,8 +1,18 @@
 import React from "react";
 import { User, Mail, Calendar, Clock, Settings } from "lucide-react";
-import { Link } from "react-router";
-
+import { Link, Navigate, useNavigate } from "react-router";
+import useAuth from "../../../hooks/useAuth";
+import { shallow } from "zustand/shallow";
+ 
 function Profile(){
+
+    const isLoggedIn = useAuth((state) => state.isLoggedIn);
+    const first_name = useAuth((state) => state.first_name);
+    const last_name = useAuth((state) => state.last_name);
+    const email = useAuth((state) => state.email);
+
+    if(!isLoggedIn) return <Navigate to="/customer/login" replace/>;
+
     return (
         <div className="w-full flex justify-center bg-[#FAF7F2]">
             <div className="max-w-5xl w-full bg-white flex flex-col py-12 px-4 md:px-6 gap-8">
@@ -11,7 +21,7 @@ function Profile(){
                     <div className="flex flex-row gap-6 items-center">
                         <User className="bg-[#8B6F47] p-5 rounded-full w-20 h-20" size={40} color="white"/>
                         <div className="text-start">
-                            <p className="text-[#5D4E37] text-2xl">Guest User</p>
+                            <p className="text-[#5D4E37] text-2xl">{first_name + " " + last_name}</p>
                             <p className="text-[#7D6E5C] text-base">Cafe Cozy Member</p>
                         </div>
                     </div>
@@ -20,7 +30,9 @@ function Profile(){
                             <Mail className="size-12 bg-[#FAF7F2] p-3.5 rounded-[10px]" color="#8B6F47" size={20}/>
                             <div className="text-start">
                                 <p className="text-xs text-[#7D6E5C]">Email</p>
-                                <p className="text-sm text-[#5D4E37]">nurgalyev.dias@gmail.com</p>
+                                <p className="text-sm text-[#5D4E37]">
+                                    {email ?? "Not Found"}
+                                </p>
                             </div>
                         </div>
                         <div className="flex flex-row gap-3 items-center">
