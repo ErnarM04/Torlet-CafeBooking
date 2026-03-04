@@ -5,7 +5,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from cafes.models import Location, Restaurant, Table
-from users.models import User
+from notifications.models import Notification
+from users.models import RestaurantStaff, User
 
 from .models import Booking
 
@@ -53,6 +54,18 @@ class BookingIntegrationTests(APITestCase):
             is_available=True,
             is_active=True,
         )
+        self.staff_user = User.objects.create_user(
+            phone_number='87770008877',
+            password='TestPass123',
+            first_name='Staff',
+            last_name='Member',
+            email='staff@test.com',
+        )
+        self.staff = RestaurantStaff.objects.create(
+            user=self.staff_user,
+            restaurant=self.restaurant,
+            position='manager',
+        )
 
         dt = timezone.localtime() + timedelta(days=1, hours=1)
         self.booking_date = dt.date()
@@ -76,6 +89,12 @@ class BookingIntegrationTests(APITestCase):
         self.assertEqual(created.table, self.table_1)
         self.customer.refresh_from_db()
         self.assertEqual(self.customer.total_bookings, 1)
+        self.assertTrue(
+            Notification.objects.filter(
+                user=self.user,
+                type='booking_created',
+            ).exists()
+        )
 
     def test_create_booking_accepts_z_suffix_time(self):
         payload = {
@@ -142,3 +161,38 @@ class BookingIntegrationTests(APITestCase):
         self.assertIsNotNone(booking.cancelled_at)
         self.assertEqual(booking.cancellation_reason, 'Plans changed')
         self.assertEqual(self.customer.cancelled_bookings, 1)
+        self.assertTrue(
+            Notification.objects.filter(
+                user=self.user,
+                type='booking_cancelled',
+            ).exists()
+        )
+
+    def test_staff_can_create_comment_customer_can_view_visible_comment(self):
+        booking = Booking.objects.create(
+            customer=self.customer,
+            restaurant=self.restaurant,
+            location=self.location,
+            table=self.table_2,
+            booking_date=self.booking_date,
+            booking_time=self.booking_time,
+            number_of_guests=2,
+            status='confirmed',
+        )
+
+        self.client.force_authenticate(self.staff_user)
+        response = self.client.post(
+            '/api/booking-comments/',
+            {
+                'booking': str(booking.booking_id),
+                'comment': 'Customer arrived 10 minutes late.',
+                'is_visible_to_customer': True,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.client.force_authenticate(self.user)
+        response = self.client.get(f'/api/booking-comments/?booking={booking.booking_id}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)

@@ -148,3 +148,37 @@ class Booking(models.Model):
             raise ValidationError('Only pending or confirmed bookings can be marked as no_show.')
         self.status = 'no_show'
         self.save(update_fields=['status', 'updated_at'])
+
+
+class BookingComment(models.Model):
+    comment_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        primary_key=True,
+    )
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    staff = models.ForeignKey(
+        'users.RestaurantStaff',
+        on_delete=models.CASCADE,
+        related_name='booking_comments',
+    )
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_visible_to_customer = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'booking_comments'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['booking', 'created_at']),
+            models.Index(fields=['staff', 'created_at']),
+            models.Index(fields=['is_visible_to_customer']),
+        ]
+
+    def __str__(self):
+        return f"Comment {self.comment_id} on {self.booking_id}"

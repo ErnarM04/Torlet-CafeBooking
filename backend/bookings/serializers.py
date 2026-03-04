@@ -6,6 +6,7 @@ from rest_framework import serializers
 from cafes.models import Location, Restaurant, Table
 
 from .models import Booking
+from .models import BookingComment
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -96,3 +97,21 @@ class BookingCreateSerializer(serializers.Serializer):
 
 class BookingCancelSerializer(serializers.Serializer):
     cancellation_reason = serializers.CharField(required=False, allow_blank=True, max_length=1000)
+
+
+class BookingCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookingComment
+        fields = (
+            'comment_id',
+            'booking',
+            'staff',
+            'comment',
+            'created_at',
+            'is_visible_to_customer',
+        )
+        read_only_fields = (
+            'comment_id',
+            'staff',
+            'created_at',
+        )

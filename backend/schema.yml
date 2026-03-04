@@ -102,6 +102,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/Register'
           description: ''
+  /api/auth/staff/promote/:
+    post:
+      operationId: auth_staff_promote_create
+      summary: Promote user to restaurant staff
+      tags:
+      - Staff
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantStaffCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RestaurantStaffCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RestaurantStaffCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestaurantStaffCreate'
+          description: ''
   /api/auth/test/:
     get:
       operationId: auth_test_retrieve
@@ -116,6 +143,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TestProtectedResponse'
+          description: ''
+  /api/auth/users/:
+    get:
+      operationId: auth_users_list
+      summary: List users for admin operations
+      tags:
+      - Staff
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserAdminList'
+          description: ''
+  /api/booking-comments/:
+    get:
+      operationId: booking_comments_list
+      summary: List booking comments
+      tags:
+      - Booking Comments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingComment'
+          description: ''
+    post:
+      operationId: booking_comments_create
+      summary: Create booking comment as staff
+      tags:
+      - Booking Comments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingComment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingComment'
+          description: ''
+  /api/booking-comments/{comment_id}/:
+    get:
+      operationId: booking_comments_retrieve
+      summary: Get booking comment details
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Booking Comments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingComment'
           description: ''
   /api/bookings/:
     get:
@@ -1046,6 +1155,104 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/notifications/:
+    get:
+      operationId: notifications_list
+      summary: List current user notifications
+      tags:
+      - Notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/notifications/{notification_id}/:
+    get:
+      operationId: notifications_retrieve
+      summary: Get notification details
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/notifications/{notification_id}/mark_read/:
+    post:
+      operationId: notifications_mark_read_create
+      summary: Mark notification as read
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      tags:
+      - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/notifications/mark_all_read/:
+    post:
+      operationId: notifications_mark_all_read_create
+      summary: Mark all notifications as read
+      tags:
+      - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Notification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
 components:
   schemas:
     Booking:
@@ -1141,6 +1348,33 @@ components:
         cancellation_reason:
           type: string
           maxLength: 1000
+    BookingComment:
+      type: object
+      properties:
+        comment_id:
+          type: string
+          format: uuid
+          readOnly: true
+        booking:
+          type: string
+          format: uuid
+        staff:
+          type: integer
+          readOnly: true
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_visible_to_customer:
+          type: boolean
+      required:
+      - booking
+      - comment
+      - comment_id
+      - created_at
+      - staff
     BookingCreate:
       type: object
       properties:
@@ -1332,6 +1566,39 @@ components:
       - opening_hours
       - restaurant_name
       - tables_count
+    Notification:
+      type: object
+      properties:
+        notification_id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - message
+      - notification_id
+      - title
+      - type
+      - user
     PatchedLocationCreate:
       type: object
       description: Сериализатор для создания локации
@@ -1487,6 +1754,18 @@ components:
       required:
       - password
       - phone_number
+    PositionEnum:
+      enum:
+      - waiter
+      - manager
+      - host
+      - chef
+      type: string
+      description: |-
+        * `waiter` - Waiter
+        * `manager` - Manager
+        * `host` - Host
+        * `chef` - Chef
     Profile:
       type: object
       properties:
@@ -1700,6 +1979,29 @@ components:
       - locations_count
       - name
       - restaurant_id
+    RestaurantStaffCreate:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        restaurant_id:
+          type: string
+          format: uuid
+        position:
+          allOf:
+          - $ref: '#/components/schemas/PositionEnum'
+          default: waiter
+        hire_date:
+          type: string
+          format: date
+          nullable: true
+        is_active:
+          type: boolean
+          default: true
+      required:
+      - restaurant_id
+      - user_id
     StatusEnum:
       enum:
       - pending
@@ -1959,6 +2261,62 @@ components:
       required:
       - access
       - refresh
+    TypeEnum:
+      enum:
+      - booking_created
+      - booking_confirmed
+      - booking_cancelled
+      - booking_reminder
+      - system
+      type: string
+      description: |-
+        * `booking_created` - Booking Created
+        * `booking_confirmed` - Booking Confirmed
+        * `booking_cancelled` - Booking Cancelled
+        * `booking_reminder` - Booking Reminder
+        * `system` - System
+    UserAdminList:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          readOnly: true
+        phone_number:
+          type: string
+          maxLength: 20
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+      required:
+      - first_name
+      - last_name
+      - phone_number
+      - user_id
   securitySchemes:
     jwtAuth:
       type: http

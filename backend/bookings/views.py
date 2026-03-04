@@ -6,9 +6,15 @@ from rest_framework.response import Response
 from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema, extend_schema_view
 
 from users.models import Customer
+from users.models import RestaurantStaff
 
-from .models import Booking
-from .serializers import BookingCancelSerializer, BookingCreateSerializer, BookingSerializer
+from .models import Booking, BookingComment
+from .serializers import (
+    BookingCancelSerializer,
+    BookingCommentSerializer,
+    BookingCreateSerializer,
+    BookingSerializer,
+)
 from .services import BookingService
 
 
@@ -141,3 +147,52 @@ class BookingViewSet(
                 'available_table_ids': [str(table.table_id) for table in availability['available_tables']],
             }
         )
+
+
+@extend_schema_view(
+    list=extend_schema(tags=['Booking Comments'], summary='List booking comments'),
+    create=extend_schema(tags=['Booking Comments'], summary='Create booking comment as staff'),
+    retrieve=extend_schema(tags=['Booking Comments'], summary='Get booking comment details'),
+)
+class BookingCommentViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    serializer_class = BookingCommentSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'comment_id'
+    lookup_value_regex = '[0-9a-f-]{36}'
+    queryset = BookingComment.objects.none()
+
+    def get_queryset(self):
+        qs = BookingComment.objects.select_related('booking', 'staff', 'staff__user')
+        booking_id = self.request.query_params.get('booking')
+        if booking_id:
+            qs = qs.filter(booking_id=booking_id)
+
+        user = self.request.user
+        if hasattr(user, 'staff_profile'):
+            staff = user.staff_profile
+            return qs.filter(booking__restaurant=staff.restaurant)
+
+        if hasattr(user, 'customer_profile'):
+            return qs.filter(
+                booking__customer=user.customer_profile,
+                is_visible_to_customer=True,
+            )
+
+        return qs.none()
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if not hasattr(user, 'staff_profile'):
+            raise ValidationError('Only restaurant staff can create booking comments.')
+
+        staff: RestaurantStaff = user.staff_profile
+        booking = serializer.validated_data['booking']
+        if not staff.restaurant_id or booking.restaurant_id != staff.restaurant_id:
+            raise ValidationError('Staff can comment only on bookings of their own restaurant.')
+
+        serializer.save(staff=staff)

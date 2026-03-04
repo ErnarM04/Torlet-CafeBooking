@@ -5,6 +5,7 @@ from django.db import transaction
 from django.db.models import F
 
 from cafes.models import Location, Restaurant, Table
+from notifications.services import NotificationService
 from users.models import Customer
 
 from .models import Booking
@@ -171,6 +172,12 @@ class BookingService:
             status=status,
         )
         Customer.objects.filter(pk=customer.pk).update(total_bookings=F('total_bookings') + 1)
+        NotificationService.notify_user(
+            user=customer.user,
+            notif_type='booking_created',
+            title='Booking created',
+            message=f'Your booking {booking.booking_number} was created successfully.',
+        )
         return booking
 
     @classmethod
@@ -181,5 +188,11 @@ class BookingService:
         booking.cancel(reason=reason)
         Customer.objects.filter(pk=customer.pk).update(
             cancelled_bookings=F('cancelled_bookings') + 1
+        )
+        NotificationService.notify_user(
+            user=customer.user,
+            notif_type='booking_cancelled',
+            title='Booking cancelled',
+            message=f'Your booking {booking.booking_number} was cancelled.',
         )
         return booking

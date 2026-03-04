@@ -84,6 +84,13 @@ class Customer(models.Model):
         return round((completed / self.total_bookings) * 100, 2)
 
 class RestaurantStaff(models.Model):
+    POSITION_CHOICES = [
+        ('waiter', 'Waiter'),
+        ('manager', 'Manager'),
+        ('host', 'Host'),
+        ('chef', 'Chef'),
+    ]
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -92,6 +99,20 @@ class RestaurantStaff(models.Model):
     )
 
     staff_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    restaurant = models.ForeignKey(
+        'cafes.Restaurant',
+        on_delete=models.CASCADE,
+        related_name='staff',
+        null=True,
+        blank=True,
+    )
+    position = models.CharField(
+        max_length=50,
+        choices=POSITION_CHOICES,
+        default='waiter',
+    )
+    hire_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
