@@ -1,84 +1,166 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-    themes: light --default dark --prefersdark all;
-    prefix: "d-";
-};
+  themes: light --default dark --prefersdark all;
+  prefix: "d-";
+}
 
 @plugin "daisyui/theme" {
-    name: "restaurant";
-    default: false;
-    color-scheme: light;
-
-
+  name: "restaurant";
+  default: false;
+  color-scheme: light;
 }
 
-p, button{
-    font-family: 'Arimo';
+p,
+button {
+  font-family: "Arimo";
 }
 
-.d-btn-primary{
-    background-color: #8B6F47;
-    border: none;
-    color: white;
-    box-shadow: 0 0 2px #c39d69;
+body {
+  background-color: #faf8f5;
+  color: #3d3935;
 }
 
-.d-badge{
-    user-select: none;
-    border-radius: 14px;
-    font-size: 12px;
-    padding: 2px 8px;
+.admin-page {
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: #faf8f5;
 }
 
-.d-badge-pending{
-    background-color: #F3F4F6;
-    border: 1px #D1D5DC solid;
-    color: #364153;
+@media (min-width: 768px) {
+  .admin-page {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
 }
 
-.d-badge-success{
-    border: #7BF1A8 solid 1px;
-    background-color: #DCFCE7;
-    color: #008236;
+@media (min-width: 1024px) {
+  .admin-page {
+    padding: 2rem;
+  }
+}
+
+.admin-surface {
+  background-color: #ffffff;
+  border: 1px solid rgba(139, 111, 71, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(61, 57, 53, 0.06);
+}
+
+.admin-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .admin-filter-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+@media (min-width: 1200px) {
+  .admin-filter-grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.admin-search,
+.admin-select {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(139, 111, 71, 0.15);
+  background-color: #ffffff;
+  color: #3d3935;
+}
+
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .admin-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .admin-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.d-btn-primary {
+  background-color: #8b6f47;
+  border: none;
+  color: white;
+  box-shadow: 0 0 2px #c39d69;
+}
+
+.d-badge {
+  user-select: none;
+  border-radius: 14px;
+  font-size: 12px;
+  padding: 2px 8px;
+}
+
+.d-badge-pending {
+  background-color: #f3f4f6;
+  border: 1px #d1d5dc solid;
+  color: #364153;
+}
+
+.d-badge-success {
+  border: #7bf1a8 solid 1px;
+  background-color: #dcfce7;
+  color: #008236;
 }
 
 .d-badge-declined {
-    border: #F9A8B6 solid 1px; 
-    background-color: #FEE2E2; 
-    color: #B91C1C; 
+  border: #f9a8b6 solid 1px;
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
-.d-badge-preparing{
-    border: #FFB86A solid 1px;
-    background-color: #FFEDD4;
-    color: #CA3500;
+.d-badge-preparing {
+  border: #ffb86a solid 1px;
+  background-color: #ffedd4;
+  color: #ca3500;
 }
 
-.d-table{
-    font-size: 14px;
-    font-weight: 500;
-    background-color: white;
+.d-table {
+  font-size: 14px;
+  font-weight: 500;
+  background-color: white;
 }
 
-.d-table thead{
-    color: #7A7269;
+.d-table thead {
+  color: #7a7269;
 }
 
-.d-table tbody{
-    color: #3D3935;
+.d-table tbody {
+  color: #3d3935;
 }
 
-.d-table-untitled{
-    font-size: 16px;
-    border: rgba(139, 111, 71, .15) solid 1px;
-    border-radius: 16px;
+.d-table-untitled {
+  font-size: 16px;
+  border: rgba(139, 111, 71, 0.15) solid 1px;
+  border-radius: 16px;
 }
 
-.d-table-untitled thead{
-    background-color: #F5EFE7;
+.d-table-untitled thead {
+  background-color: #f5efe7;
 }
 
-.d-table-untitled .addition{
-    color: #7A7269;
-    font-size: 14px;
+.d-table-untitled .addition {
+  color: #7a7269;
+  font-size: 14px;
 }

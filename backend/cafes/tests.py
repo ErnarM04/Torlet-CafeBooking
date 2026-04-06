@@ -15,6 +15,8 @@ class CafeCrudApiTests(APITestCase):
             last_name='Manager',
             email='cafes@test.com',
         )
+        self.user.is_staff = True
+        self.user.save(update_fields=['is_staff'])
         self.client.force_authenticate(self.user)
 
     def test_create_core_cafe_models(self):

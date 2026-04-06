@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Ban, Coffee } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { Link, Navigate, useNavigate } from "react-router";
@@ -54,7 +54,7 @@ function Signup(){
     if (isLoggedIn) return <Navigate to="/customer/" replace/>;
 
     return (
-        <div className="flex flex-1 flex-col w-full py-10 items-center justify-center gap-8 bg-[#FAF7F2]">
+        <div className="flex flex-1 flex-col w-full min-w-0 py-8 sm:py-10 items-center justify-center gap-8 bg-[#FAF7F2] px-4">
             <div className="flex flex-col items-center">
                 <div className="flex flex-row gap-3 items-center">
                     <Coffee className="p-3 bg-[#8B6F47] rounded-full" size={56} color="white"/>
@@ -62,7 +62,7 @@ function Signup(){
                 </div>
                 <p className="text-base text-[#7D6E5C]">Wanna join?</p>
             </div>
-            <div className="w-100 flex flex-col gap-6.75 shadow rounded-2xl p-8 border border-[#E8DFD0] bg-white">
+            <div className="w-full max-w-lg flex flex-col gap-6.75 shadow rounded-2xl p-6 sm:p-8 border border-[#E8DFD0] bg-white">
                 <div className="flex flex-col gap-3">
                         <fieldset className="d-fieldset">
                             <legend className="d-fieldset-legend text-[#5D4E37] text-sm font-medium">First Name *</legend>
@@ -114,9 +114,12 @@ function Signup(){
                         }
                     <button 
                     className="rounded-[14px] h-12 mt-3 text-white bg-[#8B6F47] text-base"
-                    onClick={(e) => {
+                    onClick={async (e) => {
                         e.preventDefault();
-                        if (validation(e)) if (register(firstName, lastName, email, phoneNumber, password)){
+                        const isValid = validation(e);
+                        if (!isValid) return;
+                        const success = await register(firstName, lastName, email, phoneNumber, password);
+                        if (success){
                             navigate("/customer/");
                         }
                     }}

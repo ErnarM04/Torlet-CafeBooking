@@ -9,6 +9,7 @@ from .serializers import (
     PhoneTokenObtainPairSerializer,
     RegisterSerializer,
     ProfileSerializer,
+    ProfileUpdateSerializer,
 )
 
 @extend_schema(tags=['Auth'], summary='Login and get JWT token pair')
@@ -47,3 +48,12 @@ class ProfileView(APIView):
     def get(self, request):
         serializer = ProfileSerializer(request.user)
         return Response(serializer.data)
+
+    @extend_schema(tags=['Auth'], summary='Update current user profile', request=ProfileUpdateSerializer, responses=ProfileSerializer)
+    def patch(self, request):
+        serializer = ProfileUpdateSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(ProfileSerializer(request.user).data)

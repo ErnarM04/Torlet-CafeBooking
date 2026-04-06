@@ -2,7 +2,9 @@
 
 from rest_framework import serializers
 from drf_spectacular.utils import OpenApiTypes, extend_schema_field
-from .models import Restaurant, Location, Table, TimeSlot
+from users.permissions import is_staff_user
+
+from .models import Location, Restaurant, Table, TimeSlot
 
 
 class RestaurantListSerializer(serializers.ModelSerializer):
@@ -58,8 +60,11 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_locations(self, obj):
         """Список локаций ресторана"""
-        locations = obj.locations.filter(is_active=True)
-        return LocationListSerializer(locations, many=True).data
+        qs = obj.locations.all()
+        request = self.context.get("request")
+        if not (request and request.user.is_authenticated and is_staff_user(request.user)):
+            qs = qs.filter(is_active=True)
+        return LocationListSerializer(qs, many=True).data
 
 
 class LocationListSerializer(serializers.ModelSerializer):
@@ -117,14 +122,20 @@ class LocationDetailSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_tables(self, obj):
         """Список столиков локации"""
-        tables = obj.tables.filter(is_active=True)
-        return TableSerializer(tables, many=True).data
-    
+        qs = obj.tables.all()
+        request = self.context.get("request")
+        if not (request and request.user.is_authenticated and is_staff_user(request.user)):
+            qs = qs.filter(is_active=True)
+        return TableSerializer(qs, many=True, context=self.context).data
+
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_time_slots(self, obj):
         """Доступные временные слоты"""
-        slots = obj.time_slots.filter(is_active=True)
-        return TimeSlotSerializer(slots, many=True).data
+        qs = obj.time_slots.all()
+        request = self.context.get("request")
+        if not (request and request.user.is_authenticated and is_staff_user(request.user)):
+            qs = qs.filter(is_active=True)
+        return TimeSlotSerializer(qs, many=True, context=self.context).data
 
 
 class TableSerializer(serializers.ModelSerializer):
@@ -179,55 +190,78 @@ class TimeSlotSerializer(serializers.ModelSerializer):
 
 class RestaurantCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания ресторана"""
-    
+
     class Meta:
         model = Restaurant
         fields = [
-            'name',
-            'description',
-            'cuisine_type',
-            'address',
-            'city',
-            'latitude',
-            'longitude',
-            'images',
+            "name",
+            "description",
+            "cuisine_type",
+            "address",
+            "city",
+            "latitude",
+            "longitude",
+            "images",
+            "is_active",
+            "rating",
+            "total_reviews",
         ]
+        extra_kwargs = {
+            "is_active": {"required": False},
+            "rating": {"required": False},
+            "total_reviews": {"required": False},
+        }
 
 
 class LocationCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания локации"""
-    
+
     class Meta:
         model = Location
         fields = [
-            'restaurant',
-            'address',
-            'city',
-            'latitude',
-            'longitude',
-            'opening_hours',
+            "restaurant",
+            "address",
+            "city",
+            "latitude",
+            "longitude",
+            "opening_hours",
+            "is_active",
         ]
+        extra_kwargs = {"is_active": {"required": False}}
 
 
 class TableCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания столика"""
-    
+
     class Meta:
         model = Table
         fields = [
-            'location',
-            'table_number',
-            'table_type',
-            'min_guests',
-            'max_guests',
-            'position_x',
-            'position_y',
-            'description',
+            "location",
+            "table_number",
+            "table_type",
+            "min_guests",
+            "max_guests",
+            "position_x",
+            "position_y",
+            "description",
+            "is_available",
+            "is_active",
         ]
+        extra_kwargs = {
+            "is_available": {"required": False},
+            "is_active": {"required": False},
+        }
     
     def validate(self, data):
         """Валидация: min_guests <= max_guests"""
-        if data['min_guests'] > data['max_guests']:
+        min_g = data.get("min_guests")
+        max_g = data.get("max_guests")
+        if self.instance is not None:
+            if min_g is None:
+                min_g = self.instance.min_guests
+            if max_g is None:
+                max_g = self.instance.max_guests
+        if min_g is not None and max_g is not None and min_g > max_g:
             raise serializers.ValidationError(
                 "min_guests не может быть больше max_guests"
             )
@@ -236,17 +270,19 @@ class TableCreateSerializer(serializers.ModelSerializer):
 
 class TimeSlotCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания временного слота"""
-    
+
     class Meta:
         model = TimeSlot
         fields = [
-            'location',
-            'start_time',
-            'end_time',
-            'duration',
-            'days_of_week',
-            'max_bookings',
+            "location",
+            "start_time",
+            "end_time",
+            "duration",
+            "days_of_week",
+            "max_bookings",
+            "is_active",
         ]
+        extra_kwargs = {"is_active": {"required": False}}
     
     def validate_days_of_week(self, value):
         """Валидация дней недели"""

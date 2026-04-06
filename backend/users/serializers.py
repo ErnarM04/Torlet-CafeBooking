@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User
+
+from .models import RestaurantStaff, User
 
 
 class PhoneTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -29,6 +30,7 @@ class PhoneTokenObtainPairSerializer(TokenObtainPairSerializer):
             'phone_number': user.phone_number,
             'first_name': user.first_name,
             'last_name': user.last_name,
+            'email': user.email or '',
         }
         return data
 
@@ -55,11 +57,40 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 class ProfileSerializer(serializers.ModelSerializer):
+    is_restaurant_staff = serializers.SerializerMethodField()
+    staff_id = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
+            'user_id',
             'phone_number',
             'first_name',
             'last_name',
             'email',
+            'is_staff',
+            'is_restaurant_staff',
+            'staff_id',
         )
+        read_only_fields = (
+            'user_id',
+            'phone_number',
+            'is_staff',
+            'is_restaurant_staff',
+            'staff_id',
+        )
+
+    def get_is_restaurant_staff(self, obj):
+        return RestaurantStaff.objects.filter(pk=obj.pk).exists()
+
+    def get_staff_id(self, obj):
+        sid = RestaurantStaff.objects.filter(user=obj).values_list(
+            'staff_id', flat=True
+        ).first()
+        return str(sid) if sid else None
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')

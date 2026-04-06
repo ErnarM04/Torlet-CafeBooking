@@ -1,15 +1,19 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000/api/cafes"; // replace with your API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const API_URL = `${API_BASE_URL}/cafes`;
 
 const useRestaurants = create((set, get) => ({
   restaurants: [],
   loading: false,
   error: "",
-  locationsByRestaurant: {}, 
+  locationsByRestaurant: {},
   locationsLoading: false,
   locationsError: "",
+  tablesByLocation: {},
+  tablesLoading: false,
+  tablesError: "",
 
   fetchRestaurants: async () => {
     const { restaurants } = get();
@@ -77,6 +81,38 @@ const useRestaurants = create((set, get) => ({
   getLocations: (restaurant_id) =>
     get().locationsByRestaurant[restaurant_id] || [],
 
+  fetchTablesForLocation: async (location_id, { force = false } = {}) => {
+    if (!location_id) return;
+    if (!force && get().tablesByLocation[location_id] !== undefined) {
+      return;
+    }
+
+    set({ tablesLoading: true, tablesError: "" });
+    try {
+      const response = await axios.get(
+        `${API_URL}/tables/?location=${location_id}`
+      );
+      set({
+        tablesByLocation: {
+          ...get().tablesByLocation,
+          [location_id]: response.data || [],
+        },
+        tablesLoading: false,
+      });
+    } catch (err) {
+      set({
+        tablesError:
+          err.response?.data?.detail ||
+          err.response?.data?.message ||
+          err.message ||
+          "Failed to load tables",
+        tablesLoading: false,
+      });
+    }
+  },
+
+  getTablesForLocation: (location_id) =>
+    get().tablesByLocation[location_id] || null,
 }));
 
 export default useRestaurants;

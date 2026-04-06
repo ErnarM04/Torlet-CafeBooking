@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from cafes.models import Location, Restaurant, Table
+from users.models import Customer
 
 from .models import Booking
 
@@ -96,3 +97,95 @@ class BookingCreateSerializer(serializers.Serializer):
 
 class BookingCancelSerializer(serializers.Serializer):
     cancellation_reason = serializers.CharField(required=False, allow_blank=True, max_length=1000)
+
+
+class StaffBookingSerializer(serializers.ModelSerializer):
+    customer_phone = serializers.CharField(
+        source="customer.user.phone_number", read_only=True
+    )
+    customer_first_name = serializers.CharField(
+        source="customer.user.first_name", read_only=True
+    )
+    customer_last_name = serializers.CharField(
+        source="customer.user.last_name", read_only=True
+    )
+    restaurant_name = serializers.CharField(source="restaurant.name", read_only=True)
+    location_address = serializers.CharField(source="location.address", read_only=True)
+    table_number = serializers.CharField(
+        source="table.table_number", read_only=True, allow_null=True
+    )
+
+    class Meta:
+        model = Booking
+        fields = (
+            "booking_id",
+            "booking_number",
+            "customer",
+            "customer_phone",
+            "customer_first_name",
+            "customer_last_name",
+            "restaurant",
+            "restaurant_name",
+            "location",
+            "location_address",
+            "table",
+            "table_number",
+            "booking_date",
+            "booking_time",
+            "number_of_guests",
+            "duration_minutes",
+            "status",
+            "special_request",
+            "created_at",
+            "confirmed_at",
+            "cancelled_at",
+            "completed_at",
+            "updated_at",
+            "cancellation_reason",
+            "assigned_by",
+        )
+        read_only_fields = fields
+
+
+class StaffCustomerSerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(source="user.phone_number", read_only=True)
+    first_name = serializers.CharField(source="user.first_name", read_only=True)
+    last_name = serializers.CharField(source="user.last_name", read_only=True)
+    email = serializers.EmailField(source="user.email", read_only=True)
+
+    class Meta:
+        model = Customer
+        fields = (
+            "user",
+            "phone_number",
+            "first_name",
+            "last_name",
+            "email",
+            "customer_id",
+            "total_bookings",
+            "cancelled_bookings",
+            "no_show_count",
+            "loyalty_points",
+            "preferences",
+            "created_at",
+        )
+        read_only_fields = (
+            "user",
+            "phone_number",
+            "first_name",
+            "last_name",
+            "email",
+            "customer_id",
+            "total_bookings",
+            "cancelled_bookings",
+            "no_show_count",
+            "loyalty_points",
+            "preferences",
+            "created_at",
+        )
+
+
+class StaffCustomerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ("loyalty_points", "preferences")

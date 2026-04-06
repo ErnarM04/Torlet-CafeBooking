@@ -11,22 +11,22 @@ import Signup from "../features/customer/pages/Signup";
 import CafeList from "../features/customer/pages/CafeList";
 import CafeDetails from "../features/customer/pages/CafeDetails";
 
-export default function Customer(){
-    return (
-        <div className="flex flex-col min-h-screen">
-            <Header></Header>
-            <Routes>
-                <Route path="/" element={<Home/>}/>
-                <Route path="booking" element={<Booking/>}/>
-                <Route path="history" element={<BookingsHistory/>}/>
-                <Route path="profile" element={<Profile/>}/>
-                <Route path="profile/settings" element={<Settings/>}/>
-                <Route path="cafes" element={<CafeList/>}/>
-                <Route path="cafes/:id" element={<CafeDetails/>}/>
-                <Route path="cafes/:id/booking" element={<Booking/>}/>
-                <Route path="login" element={<Login/>}/>
-                <Route path="register" element={<Signup/>}/>
-            </Routes>
-        </div>
-    );
+export default function Customer() {
+  return (
+    <div className="flex flex-col min-h-screen min-w-0 overflow-x-hidden">
+      <Header></Header>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="booking" element={<Booking />} />
+        <Route path="history" element={<BookingsHistory />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="profile/settings" element={<Settings />} />
+        <Route path="cafes" element={<CafeList />} />
+        <Route path="cafes/:id" element={<CafeDetails />} />
+        <Route path="cafes/:id/booking" element={<Booking />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Signup />} />
+      </Routes>
+    </div>
+  );
 }

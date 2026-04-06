@@ -1,59 +1,78 @@
-import React, { useEffect, useState } from "react";
-import { Coffee, LayoutDashboard, Calendar, ShoppingBag, Users, ChartColumn, Settings } from "lucide-react";
-import { Link } from "react-router";
+import React, { useMemo } from "react";
+import {
+  Coffee,
+  LayoutDashboard,
+  Building2,
+  MapPin,
+  LayoutGrid,
+  Clock,
+  Calendar,
+  ShoppingBag,
+  Users,
+  ChartColumn,
+  UserCircle,
+  Settings,
+} from "lucide-react";
+import { Link, useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
 
-function NavMenu({setTitle}){
+const PAGES = [
+  { path: "dashboard", navKey: "dashboard", Icon: LayoutDashboard },
+  { path: "restaurants", navKey: "restaurants", Icon: Building2 },
+  { path: "locations", navKey: "locations", Icon: MapPin },
+  { path: "tables", navKey: "tables", Icon: LayoutGrid },
+  { path: "time-slots", navKey: "timeSlots", Icon: Clock },
+  { path: "bookings", navKey: "bookings", Icon: Calendar },
+  { path: "orders", navKey: "orders", Icon: ShoppingBag },
+  { path: "customers", navKey: "customers", Icon: Users },
+  { path: "analytics", navKey: "analytics", Icon: ChartColumn },
+  { path: "profile", navKey: "profile", Icon: UserCircle },
+  { path: "settings", navKey: "settings", Icon: Settings },
+];
 
-    const [selected, setSelected] = useState("Dashboard");
+export default function NavMenu() {
+  const location = useLocation();
+  const { t } = useTranslation();
 
-    const pages = new Map([
-        ["Dashboard", LayoutDashboard],
-        ["Bookings", Calendar],
-        ["Orders", ShoppingBag],
-        ["Customers", Users],
-        ["Analytics", ChartColumn],
-        ["Settings", Settings]
-    ])
+  const currentPath = useMemo(() => {
+    const p = location.pathname.replace(/\/+$/, "");
+    const after = p.replace(/^\/admin\/?/, "");
+    return (after.split("/")[0] || "dashboard").toLowerCase();
+  }, [location.pathname]);
 
-    function select(name){
-        setSelected(name);
-        setTitle(name);
-    }
-
-    function selectedItem(name, Icon){
-        return (
-            <div className="flex bg-[#8B6F47] rounded-xl items-start gap-3 p-3 cursor-pointer">
-                <Icon className="w-5 h-5" color="white" />
-                <p className="text-base text-white">{name}</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="w-full max-w-64 bg-white">
-            <div className="flex border border-[#8B6F47]/15 gap-2 p-6">
-                <Coffee className="bg-[#8B6F47] w-10 h-10 rounded-xl p-2" color="white"/>
-                <div className="flex flex-col items-start">
-                    <p className="text-base text-[#3D3935] font-semibold">CafeAdmin</p>
-                    <p className="text-xs text-[#7A7269]">Booking Management</p>
-                </div>
-            </div>
-            <div className="flex flex-col h-max gap-1 p-4 border border-[#8B6F47]/15">
-                {[...pages].map(([name, Icon]) => (
-                    name != selected ?
-                    <Link className="flex items-center justify-start gap-3 p-3 cursor-pointer" to={"/admin/"+name.toLowerCase()} onClick={() => select(name)}>
-                        <Icon className="w-5 h-5" />
-                        <p className="text-base ">{name}</p>
-                    </Link> :
-                    <div className="flex bg-[#8B6F47] rounded-xl items-center justify-start gap-3 p-3 cursor-pointer">
-                        <Icon className="w-5 h-5" color="white" />
-                        <p className="text-base text-white">{name}</p>
-                    </div>
-                ))}
-            </div>
-            
+  return (
+    <div className="w-full lg:max-w-64 bg-white border-b lg:border-b-0 lg:border-r border-[#8B6F47]/15">
+      <div className="flex gap-2 p-4 md:p-6">
+        <Coffee className="bg-[#8B6F47] w-10 h-10 rounded-xl p-2" color="white" />
+        <div className="flex flex-col items-start min-w-0">
+          <p className="text-base text-[#3D3935] font-semibold truncate">{t("admin.brand")}</p>
+          <p className="text-xs text-[#7A7269]">{t("admin.brandSub")}</p>
         </div>
-    );
+      </div>
+      <nav className="flex flex-row lg:flex-col h-max gap-1 p-2 md:p-4 overflow-x-auto lg:overflow-visible">
+        {PAGES.map(({ path, navKey, Icon }) => {
+          const label = t(`admin.nav.${navKey}`);
+          const active = path === currentPath;
+          return active ? (
+            <div
+              key={path}
+              className="flex bg-[#8B6F47] rounded-xl items-center justify-start gap-2 md:gap-3 p-3 cursor-pointer whitespace-nowrap"
+            >
+              <Icon className="w-5 h-5 shrink-0" color="white" />
+              <p className="text-base text-white">{label}</p>
+            </div>
+          ) : (
+            <Link
+              key={path}
+              className="flex items-center justify-start gap-2 md:gap-3 p-3 rounded-xl cursor-pointer whitespace-nowrap hover:bg-[#F5EFE7]"
+              to={`/admin/${path}`}
+            >
+              <Icon className="w-5 h-5 shrink-0" />
+              <p className="text-base">{label}</p>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
 }
-
-export default NavMenu;
