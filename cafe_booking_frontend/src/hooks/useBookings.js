@@ -52,7 +52,9 @@ const useBookings = create((set, get) => ({
   bookings: [],
   loading: false,
   error: "",
+  allTables: [],
   availableTables: [],
+  availableTableIds: [],
   tablesLoading: false,
   tablesError: "",
   selectedTableId: "",
@@ -75,7 +77,7 @@ const useBookings = create((set, get) => ({
 
   fetchAvailableTables: async (locationId, bookingDate, bookingTime, numberOfGuests) => {
     if (!locationId || !bookingDate || !bookingTime) {
-      set({ availableTables: [] });
+      set({ allTables: [], availableTables: [], availableTableIds: [] });
       return;
     }
 
@@ -96,12 +98,12 @@ const useBookings = create((set, get) => ({
         }),
       ]);
 
-      const availableIds = new Set(availabilityRes.data.available_table_ids || []);
-      const availableTables = (allTablesRes.data || []).filter((table) =>
-        availableIds.has(table.table_id),
-      );
+      const allTables = allTablesRes.data || [];
+      const availableIdsArr = availabilityRes.data.available_table_ids || [];
+      const availableIds = new Set(availableIdsArr);
+      const availableTables = allTables.filter((table) => availableIds.has(table.table_id));
 
-      set({ availableTables, tablesLoading: false });
+      set({ allTables, availableTables, availableTableIds: availableIdsArr, tablesLoading: false });
     } catch (err) {
       set({
         tablesError:

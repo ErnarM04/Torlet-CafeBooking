@@ -20,23 +20,25 @@ export default function AdminDialog({ open, title, onClose, children, footer }) 
   return (
     <dialog
       ref={ref}
-      className="d-modal rounded-2xl border border-[#E8DFD0] p-0 shadow-xl sm:max-w-lg w-[calc(100%-2rem)] max-h-[90vh] overflow-hidden bg-white"
+      className="d-modal"
       onClose={() => onClose?.()}
       onCancel={(e) => {
         e.preventDefault();
         onClose?.();
       }}
     >
-      <div className="flex max-h-[90vh] flex-col">
-        <div className="border-b border-[#E8DFD0] px-5 py-4">
-          <h2 className="text-lg font-semibold text-[#3D3935]">{title}</h2>
-        </div>
-        <div className="overflow-y-auto px-5 py-4">{children}</div>
-        <div className="flex flex-wrap justify-end gap-2 border-t border-[#E8DFD0] px-5 py-3">
-          {footer}
-          <button type="button" className="d-btn d-btn-ghost" onClick={onClose}>
-            Cancel
-          </button>
+      <div className="d-modal-box m-0 w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-[#E8DFD0] bg-white p-0 shadow-xl">
+        <div className="flex max-h-[90vh] flex-col">
+          <div className="border-b border-[#E8DFD0] px-5 py-4">
+            <h2 className="text-lg font-semibold text-[#3D3935]">{title}</h2>
+          </div>
+          <div className="overflow-y-auto px-5 py-4">{children}</div>
+          <div className="flex flex-wrap justify-end gap-2 border-t border-[#E8DFD0] px-5 py-3">
+            {footer}
+            <button type="button" className="d-btn d-btn-ghost" onClick={onClose}>
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
       <form method="dialog" className="d-modal-backdrop">

@@ -92,6 +92,12 @@ class RestaurantStaff(models.Model):
     )
 
     staff_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    restaurants = models.ManyToManyField(
+        'cafes.Restaurant',
+        related_name='staff_members',
+        blank=True,
+        help_text='Рестораны, которыми управляет/к которым имеет доступ сотрудник'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

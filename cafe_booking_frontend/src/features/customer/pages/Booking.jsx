@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import useRestaurants from "../../../hooks/useRestaurants";
 import useBookings from "../../../hooks/useBookings";
 import useAuth from "../../../hooks/useAuth";
+import TableMap from "../../../components/konva/TableMap";
 
 function Booking(){
     const { t } = useTranslation();
@@ -13,7 +14,9 @@ function Booking(){
     const { id } = useParams();
     const { fetchRestaurants, getRestaurantById, fetchLocations, getLocations } = useRestaurants();
     const {
+        allTables,
         availableTables,
+        availableTableIds,
         tablesLoading,
         tablesError,
         fetchAvailableTables,
@@ -132,36 +135,29 @@ function Booking(){
                     {tablesLoading ? <span className="d-loading d-loading-dots self-start"></span> : null}
                     {tablesError ? <p className="text-red-600 text-start">{tablesError}</p> : null}
                     {!tablesLoading && !tablesError && (!date || !time) ? (
-                        <p className="text-sm text-[#7D6E5C] text-start">
-                            {t("customer.bookingPickHint")}
-                        </p>
+                      <p className="text-sm text-[#7D6E5C] text-start">{t("customer.bookingPickHint")}</p>
                     ) : null}
                     {!tablesLoading && !tablesError && date && time && availableTables.length === 0 ? (
-                        <p className="text-sm text-[#7D6E5C] text-start">
-                            {t("customer.bookingNoneHint")}
-                        </p>
+                      <p className="text-sm text-[#7D6E5C] text-start">{t("customer.bookingNoneHint")}</p>
                     ) : null}
-                    <ul className="d-list flex flex-col gap-3">
-                        {availableTables.map((table) => {
-                            const isSelected = selectedTableId === table.table_id;
-                            return (
-                                <li
-                                    key={table.table_id}
-                                    className={isSelected
-                                        ? "d-list-row flex flex-row justify-between items-center border-2 bg-[#FAF7F2] border-[#8B6F47] rounded-[14px] cursor-pointer"
-                                        : "d-list-row flex flex-col border-2 text-start border-[#E8DFD0] rounded-[14px] cursor-pointer"
-                                    }
-                                    onClick={() => selectTable(table.table_id)}
-                                >
-                                    <div className="flex flex-col text-start">
-                                        <p className="text-base text-[#5D4E37]">{t("customer.bookingTableNum", { num: table.table_number })}</p>
-                                        <p className="text-sm text-[#7D6E5C]">{t("customer.bookingSeatsMeta", { type: table.table_type, min: table.min_guests, max: table.max_guests })}</p>
-                                    </div>
-                                    {isSelected ? <Check className="rounded-full bg-[#8B6F47] p-1" size={24} color="white"/> : null}
-                                </li>
-                            );
-                        })}
-                    </ul>
+
+                    {!tablesLoading && !tablesError && allTables.length ? (
+                      <div className="mt-2">
+                        <TableMap
+                          tables={allTables}
+                          enabledTableIds={availableTableIds}
+                          selectedId={selectedTableId}
+                          onSelect={(id) => selectTable(id)}
+                          height={420}
+                        />
+                        {selectedTableId ? (
+                          <div className="mt-3 flex items-center gap-2 text-sm text-[#7D6E5C]">
+                            <Check className="h-5 w-5 rounded-full bg-[#8B6F47] p-1" color="white" />
+                            <span>{t("customer.bookingConfirm")}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
                 </div>
                 {submitError ? <p className="text-red-600 text-start">{submitError}</p> : null}
                 <button

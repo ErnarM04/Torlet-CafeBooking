@@ -165,6 +165,32 @@ class StaffCustomerViewSet(
             return StaffCustomerUpdateSerializer
         return StaffCustomerSerializer
 
+    def get_queryset(self):
+        """
+        Staff sees only customers who have ever booked in restaurants
+        assigned to their RestaurantStaff profile.
+
+        Superusers / Django staff without RestaurantStaff profile keep full access.
+        """
+        base = Customer.objects.select_related("user").all()
+        user = getattr(self.request, "user", None)
+        if not user or not user.is_authenticated:
+            return base.none()
+
+        # Full access for Django staff that are not tied to a RestaurantStaff profile.
+        if getattr(user, "is_staff", False) and not RestaurantStaff.objects.filter(pk=user.pk).exists():
+            return base
+
+        profile = RestaurantStaff.objects.filter(pk=user.pk).first()
+        if not profile:
+            return base.none()
+
+        allowed = profile.restaurants.all()
+        if not allowed.exists():
+            return base.none()
+
+        return base.filter(bookings__restaurant__in=allowed).distinct()
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()

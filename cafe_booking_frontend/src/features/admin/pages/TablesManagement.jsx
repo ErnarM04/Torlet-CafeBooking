@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { adminRequest } from "../../../hooks/useAdminApi";
 import AdminDialog from "../components/AdminDialog";
+import TableMap from "../../../components/konva/TableMap";
 
 const TABLE_TYPES = [
   "indoor",
@@ -18,6 +19,13 @@ const emptyForm = {
   table_type: "indoor",
   min_guests: "1",
   max_guests: "4",
+  position_x: "",
+  position_y: "",
+  shape: "rect",
+  width: "",
+  height: "",
+  radius: "",
+  rotation: "0",
   description: "",
   is_available: true,
   is_active: true,
@@ -31,6 +39,7 @@ export default function TablesManagement() {
   const [error, setError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [pendingEdit, setPendingEdit] = useState({ id: null, at: 0 });
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
 
@@ -61,12 +70,20 @@ export default function TablesManagement() {
     loadLocations();
   }, [loadLocations]);
 
+  // Make the hall constructor visible by default.
+  useEffect(() => {
+    if (filterLocation) return;
+    if (!locations.length) return;
+    setFilterLocation(locations[0].location_id);
+  }, [locations, filterLocation]);
+
   useEffect(() => {
     loadTables();
   }, [loadTables]);
 
   function openCreate() {
     setEditingId(null);
+    setPendingEdit({ id: null, at: 0 });
     setForm({
       ...emptyForm,
       location: filterLocation || "",
@@ -76,6 +93,7 @@ export default function TablesManagement() {
 
   async function openEdit(row) {
     setEditingId(row.table_id);
+    setPendingEdit({ id: null, at: 0 });
     setDialogOpen(true);
     setError("");
     try {
@@ -86,6 +104,13 @@ export default function TablesManagement() {
         table_type: data.table_type || "indoor",
         min_guests: String(data.min_guests ?? 1),
         max_guests: String(data.max_guests ?? 4),
+        position_x: data.position_x ?? "",
+        position_y: data.position_y ?? "",
+        shape: data.shape || "rect",
+        width: data.width ?? "",
+        height: data.height ?? "",
+        radius: data.radius ?? "",
+        rotation: String(data.rotation ?? 0),
         description: data.description || "",
         is_available: data.is_available !== false,
         is_active: data.is_active !== false,
@@ -104,6 +129,13 @@ export default function TablesManagement() {
       table_type: form.table_type,
       min_guests: parseInt(form.min_guests, 10),
       max_guests: parseInt(form.max_guests, 10),
+      position_x: form.position_x === "" ? null : parseInt(form.position_x, 10),
+      position_y: form.position_y === "" ? null : parseInt(form.position_y, 10),
+      shape: form.shape,
+      width: form.width === "" ? null : parseInt(form.width, 10),
+      height: form.height === "" ? null : parseInt(form.height, 10),
+      radius: form.radius === "" ? null : parseInt(form.radius, 10),
+      rotation: form.rotation === "" ? 0 : parseInt(form.rotation, 10),
       description: form.description.trim(),
       is_available: form.is_available,
       is_active: form.is_active,
@@ -143,6 +175,39 @@ export default function TablesManagement() {
     }
   }
 
+  const tablesForMap = useMemo(() => {
+    if (!filterLocation) return [];
+    return rows.filter((r) => String(r.location) === String(filterLocation));
+  }, [rows, filterLocation]);
+
+  async function moveOnMap(tableId, pos) {
+    try {
+      await adminRequest({
+        method: "patch",
+        path: `/cafes/tables/${tableId}/`,
+        data: { position_x: pos.x, position_y: pos.y },
+      });
+      setRows((prev) =>
+        prev.map((t) => (t.table_id === tableId ? { ...t, position_x: pos.x, position_y: pos.y } : t)),
+      );
+    } catch (e) {
+      setError(e.response?.data?.detail || e.message);
+    }
+  }
+
+  async function transformOnMap(tableId, patch) {
+    try {
+      await adminRequest({
+        method: "patch",
+        path: `/cafes/tables/${tableId}/`,
+        data: patch,
+      });
+      setRows((prev) => prev.map((t) => (t.table_id === tableId ? { ...t, ...patch } : t)));
+    } catch (e) {
+      setError(e.response?.data?.detail || e.message);
+    }
+  }
+
   return (
     <div className="admin-page">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -165,6 +230,41 @@ export default function TablesManagement() {
           <Plus size={18} /> Add table
         </button>
       </div>
+
+      {filterLocation ? (
+        <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-[#E8DFD0] bg-white p-4">
+          <p className="text-sm font-medium text-[#5D4E37]">Hall constructor</p>
+          <p className="text-sm text-[#7A7269]">
+            Drag tables on the map to set their position. Click a table to edit its properties.
+          </p>
+          <TableMap
+            tables={tablesForMap}
+            editable
+            selectedId={editingId}
+            onSelect={(id) => {
+              if (!id) {
+                setEditingId(null);
+                setPendingEdit({ id: null, at: 0 });
+                return;
+              }
+              // First click: select (for drag/resize). Second click (same id): open edit dialog.
+              const now = Date.now();
+              const isSecondClick = pendingEdit.id === id && now - pendingEdit.at <= 650;
+              setEditingId(id);
+              setPendingEdit({ id, at: now });
+              if (isSecondClick) {
+                const row = rows.find((r) => r.table_id === id);
+                if (row) openEdit(row);
+              }
+            }}
+            onMove={moveOnMap}
+            onTransform={transformOnMap}
+            height={460}
+          />
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-[#7A7269]">Select a location to edit the hall map.</p>
+      )}
       {error && !dialogOpen ? <p className="text-sm text-red-600">{error}</p> : null}
       {loading ? (
         <span className="d-loading d-loading-dots" />
@@ -197,7 +297,13 @@ export default function TablesManagement() {
                     <button
                       type="button"
                       className="d-btn d-btn-ghost d-btn-sm"
-                      onClick={() => openEdit(r)}
+                      onClick={() => {
+                        const now = Date.now();
+                        const isSecondClick = pendingEdit.id === r.table_id && now - pendingEdit.at <= 650;
+                        setEditingId(r.table_id);
+                        setPendingEdit({ id: r.table_id, at: now });
+                        if (isSecondClick) openEdit(r);
+                      }}
                     >
                       <Pencil size={16} />
                     </button>
@@ -292,6 +398,83 @@ export default function TablesManagement() {
               />
             </label>
           </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-[#5D4E37]">Map X</span>
+              <input
+                className="d-input rounded-xl border-[#E8DFD0]"
+                value={form.position_x}
+                onChange={(e) => setForm({ ...form, position_x: e.target.value })}
+                placeholder="120"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-[#5D4E37]">Map Y</span>
+              <input
+                className="d-input rounded-xl border-[#E8DFD0]"
+                value={form.position_y}
+                onChange={(e) => setForm({ ...form, position_y: e.target.value })}
+                placeholder="80"
+              />
+            </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-[#5D4E37]">Shape</span>
+              <select
+                className="d-select admin-select rounded-xl"
+                value={form.shape}
+                onChange={(e) => setForm({ ...form, shape: e.target.value })}
+              >
+                <option value="rect">rect</option>
+                <option value="round">round</option>
+              </select>
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-[#5D4E37]">Rotation</span>
+              <input
+                className="d-input rounded-xl border-[#E8DFD0]"
+                value={form.rotation}
+                onChange={(e) => setForm({ ...form, rotation: e.target.value })}
+                placeholder="0"
+              />
+            </label>
+          </div>
+
+          {form.shape === "round" ? (
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-[#5D4E37]">Radius</span>
+              <input
+                className="d-input rounded-xl border-[#E8DFD0]"
+                value={form.radius}
+                onChange={(e) => setForm({ ...form, radius: e.target.value })}
+                placeholder="28"
+              />
+            </label>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <label className="flex flex-col gap-1 text-sm">
+                <span className="text-[#5D4E37]">Width</span>
+                <input
+                  className="d-input rounded-xl border-[#E8DFD0]"
+                  value={form.width}
+                  onChange={(e) => setForm({ ...form, width: e.target.value })}
+                  placeholder="64"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                <span className="text-[#5D4E37]">Height</span>
+                <input
+                  className="d-input rounded-xl border-[#E8DFD0]"
+                  value={form.height}
+                  onChange={(e) => setForm({ ...form, height: e.target.value })}
+                  placeholder="48"
+                />
+              </label>
+            </div>
+          )}
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-[#5D4E37]">Description</span>
             <textarea

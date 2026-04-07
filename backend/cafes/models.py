@@ -305,6 +305,37 @@ class Table(models.Model):
         blank=True,
         verbose_name='Y Позиция на Плане'
     )
+
+    # Геометрия для схемы зала (UI, кинотеатр-подобный выбор)
+    SHAPE_CHOICES = [
+        ('rect', 'Rectangle'),
+        ('round', 'Round'),
+    ]
+    shape = models.CharField(
+        max_length=10,
+        choices=SHAPE_CHOICES,
+        default='rect',
+        verbose_name='Форма на Плане'
+    )
+    width = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Ширина на Плане'
+    )
+    height = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Высота на Плане'
+    )
+    radius = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Радиус (для круглых)'
+    )
+    rotation = models.IntegerField(
+        default=0,
+        verbose_name='Поворот (градусы)'
+    )
     
     # Описание
     description = models.TextField(

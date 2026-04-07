@@ -1,11 +1,33 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 
 function Modal(){
+    const dialogId = "my_modal_2";
+    const [armed, setArmed] = useState(false);
+    const timerRef = useRef(null);
+
+    function requestOpen() {
+        // Require two consecutive clicks (within 600ms) to open.
+        if (!armed) {
+            setArmed(true);
+            if (timerRef.current) clearTimeout(timerRef.current);
+            timerRef.current = setTimeout(() => setArmed(false), 600);
+            return;
+        }
+        setArmed(false);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        document.getElementById(dialogId)?.showModal();
+    }
+
     return(
         <div>
-            <button className="d-btn" onClick={()=>document.getElementById('my_modal_2').showModal()}>open modal</button>
-            <dialog id="my_modal_2" className="d-modal d-modal-bottom sm:d-modal-middle">
-                <div className="d-modal-box">
+            <button className="d-btn" onClick={requestOpen}>
+                {armed ? "Click again to open" : "Open modal"}
+            </button>
+            <dialog
+                id={dialogId}
+                className="d-modal d-modal-middle m-0 w-[calc(100%-2rem)] max-h-[90vh] overflow-hidden bg-transparent p-0"
+            >
+                <div className="d-modal-box w-full max-w-lg">
                     <h3 className="font-bold text-lg">Hello!</h3>
                     <p className="py-4">
                         Press ESC, click outside, or press Close

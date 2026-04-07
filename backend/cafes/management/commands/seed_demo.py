@@ -63,7 +63,7 @@ class Command(BaseCommand):
             loyalty_points=40,
         )
 
-        RestaurantStaff.objects.get_or_create(user=staff)
+        staff_profile, _ = RestaurantStaff.objects.get_or_create(user=staff)
 
         # --- Restaurant 1 ---
         r1, _ = Restaurant.objects.get_or_create(
@@ -203,6 +203,9 @@ class Command(BaseCommand):
                 "is_active": True,
             },
         )
+
+        # Staff owns / manages only Restaurant 1 (demo)
+        staff_profile.restaurants.set([r1])
 
         # --- Bookings (fixed numbers for idempotency) ---
         demo_bookings = [

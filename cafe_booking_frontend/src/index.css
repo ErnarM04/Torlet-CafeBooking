@@ -21,7 +21,11 @@ body {
 }
 
 .admin-page {
+  /* Keep all admin pages visually consistent across breakpoints */
   width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  min-width: 0;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -39,6 +43,23 @@ body {
 @media (min-width: 1024px) {
   .admin-page {
     padding: 2rem;
+  }
+}
+
+/* Mobile-first: ensure form controls don't look tiny */
+.d-input,
+.d-select,
+.d-textarea,
+.d-btn {
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .d-input,
+  .d-select,
+  .d-textarea,
+  .d-btn {
+    font-size: 0.95rem;
   }
 }
 
