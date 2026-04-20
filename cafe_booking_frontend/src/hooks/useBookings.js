@@ -77,7 +77,12 @@ const useBookings = create((set, get) => ({
 
   fetchAvailableTables: async (locationId, bookingDate, bookingTime, numberOfGuests) => {
     if (!locationId || !bookingDate || !bookingTime) {
-      set({ allTables: [], availableTables: [], availableTableIds: [] });
+      set({
+        allTables: [],
+        availableTables: [],
+        availableTableIds: [],
+        selectedTableId: "",
+      });
       return;
     }
 
@@ -102,8 +107,16 @@ const useBookings = create((set, get) => ({
       const availableIdsArr = availabilityRes.data.available_table_ids || [];
       const availableIds = new Set(availableIdsArr);
       const availableTables = allTables.filter((table) => availableIds.has(table.table_id));
+      const currentSelected = get().selectedTableId;
+      const keepSelected = currentSelected && availableIds.has(currentSelected);
 
-      set({ allTables, availableTables, availableTableIds: availableIdsArr, tablesLoading: false });
+      set({
+        allTables,
+        availableTables,
+        availableTableIds: availableIdsArr,
+        selectedTableId: keepSelected ? currentSelected : "",
+        tablesLoading: false,
+      });
     } catch (err) {
       set({
         tablesError:
@@ -114,6 +127,16 @@ const useBookings = create((set, get) => ({
   },
 
   selectTable: (tableId) => set({ selectedTableId: tableId }),
+
+  resetBookingDraft: () =>
+    set({
+      allTables: [],
+      availableTables: [],
+      availableTableIds: [],
+      selectedTableId: "",
+      tablesLoading: false,
+      tablesError: "",
+    }),
 
   createBooking: async ({
     restaurantId,

@@ -10,7 +10,7 @@ function readStoredAuth() {
         const raw = localStorage.getItem(AUTH_STORAGE_KEY);
         if (!raw) return null;
         return JSON.parse(raw);
-    } catch (e) {
+    } catch {
         return null;
     }
 }
@@ -149,6 +149,24 @@ const useAuth = create((set) => ({
         } catch (error) {
             console.log(error);
             return false;
+        }
+    },
+
+    requestSmsCode: async (phone_number) => {
+        try {
+            const res = await axios.post(URL + "/sms/send/", { phone_number });
+            return { success: true, dev_code: res.data?.dev_code };
+        } catch (error) {
+            return { success: false, error: axiosErrorMessage(error, "Failed to send SMS code.") };
+        }
+    },
+
+    verifySmsCode: async (phone_number, code) => {
+        try {
+            await axios.post(URL + "/sms/verify/", { phone_number, code });
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: axiosErrorMessage(error, "Invalid or expired code.") };
         }
     },
     logout: () => {

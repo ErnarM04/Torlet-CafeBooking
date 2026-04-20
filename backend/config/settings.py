@@ -133,6 +133,18 @@ DATABASES = {
     }
 }
 
+# SMS verification (demo-friendly).
+# In production you should use a real SMS provider (e.g. Twilio) and a shared cache/DB.
+SMS_CODE_TTL_SECONDS = 300  # 5 minutes
+SMS_VERIFIED_TTL_SECONDS = 600  # 10 minutes after successful verify
+
+# Local memory cache is enough for dev / single process.
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "diploma-cafe-booking",
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

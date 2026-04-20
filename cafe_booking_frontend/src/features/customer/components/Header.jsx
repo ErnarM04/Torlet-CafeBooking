@@ -1,9 +1,10 @@
 import React from "react";
-import { Coffee, User } from "lucide-react";
+import { User } from "lucide-react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import useAuth from "../../../hooks/useAuth";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import torletLogo from "../../../assets/torlet-logo.png";
 
 function Header() {
   const { t } = useTranslation();
@@ -16,11 +17,7 @@ function Header() {
           to="/customer/"
           className="flex flex-row items-center gap-2 shrink-0"
         >
-          <Coffee
-            className="p-2 bg-[#8B6F47] rounded-full"
-            color="white"
-            size={40}
-          />
+          <img src={torletLogo} alt="Torlet logo" className="h-10 w-10 rounded-xl object-contain" />
           <p className="text-xl font-bold text-[#5D4E37]">{t("landing.brand")}</p>
         </Link>
         <nav

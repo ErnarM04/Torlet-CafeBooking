@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Ban, Coffee } from "lucide-react";
+import { Ban } from "lucide-react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import useAdminAuth from "../../../hooks/useAdminAuth";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import torletLogo from "../../../assets/torlet-logo.png";
 
 export default function AdminLogin() {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ export default function AdminLogin() {
       </div>
       <div className="flex flex-col items-center text-center">
         <div className="flex flex-row items-center gap-3">
-          <Coffee className="rounded-full bg-[#8B6F47] p-3" size={56} color="white" />
+          <img src={torletLogo} alt="Torlet logo" className="h-14 w-14 rounded-xl object-contain" />
           <div className="text-start">
             <p className="text-2xl font-bold text-[#3D3935] sm:text-3xl">{t("admin.brand")}</p>
             <p className="text-sm text-[#7A7269]">{t("admin.loginStaff")}</p>

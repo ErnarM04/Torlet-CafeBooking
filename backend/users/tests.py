@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.core.cache import cache
 from .models import User
 
 
@@ -20,6 +21,8 @@ class AuthenticationTests(APITestCase):
         }
 
     def test_user_registration(self):
+        # Registration requires prior SMS verification
+        cache.set(f"sms_verified:{self.user_data['phone_number']}", True, timeout=600)
         response = self.client.post(self.register_url, self.user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(

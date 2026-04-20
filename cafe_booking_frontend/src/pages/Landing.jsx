@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
-  Coffee,
   LayoutDashboard,
   Sparkles,
   Clock,
@@ -14,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import torletLogo from "../assets/torlet-logo.png";
 
 const FEATURE_KEYS = [
   { icon: Clock, titleKey: "feat_minute_title", textKey: "feat_minute_text" },
@@ -54,6 +54,9 @@ export default function Landing() {
         </div>
 
         <header className="mb-14 text-center sm:mb-16">
+          <div className="mb-4 flex justify-center">
+            <img src={torletLogo} alt="Torlet logo" className="h-20 w-20 object-contain" />
+          </div>
           <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-[#8b6f47]">
             {t("landing.brand")}
           </p>
@@ -71,7 +74,7 @@ export default function Landing() {
             className="group flex flex-col rounded-2xl border border-[#e8dfd0] bg-white p-8 shadow-[0_8px_24px_rgba(61,57,53,0.06)] transition hover:border-[#c9b89a] hover:shadow-[0_12px_32px_rgba(61,57,53,0.1)]"
           >
             <span className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#faf7f2] text-[#8b6f47] transition group-hover:bg-[#f3ebe0]">
-              <Coffee className="h-7 w-7" strokeWidth={1.75} />
+              <img src={torletLogo} alt="Torlet logo" className="h-8 w-8 object-contain" />
             </span>
             <h2 className="text-xl font-semibold text-[#5d4e37] sm:text-2xl">{t("landing.guestsTitle")}</h2>
             <p className="mt-2 flex-1 text-[#7d6e5c]">{t("landing.guestsLead")}</p>
@@ -157,7 +160,11 @@ export default function Landing() {
                 className="admin-surface flex flex-col rounded-2xl border border-[#e8dfd0] bg-white p-6 shadow-[0_8px_24px_rgba(61,57,53,0.04)]"
               >
                 <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#faf7f2] text-[#8b6f47]">
-                  <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+                  {React.createElement(Icon, {
+                    className: "h-5 w-5",
+                    strokeWidth: 1.75,
+                    "aria-hidden": true,
+                  })}
                 </span>
                 <h3 className="font-semibold text-[#5d4e37]">{t(`landing.${titleKey}`)}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#7d6e5c]">{t(`landing.${textKey}`)}</p>
@@ -196,14 +203,14 @@ export default function Landing() {
           <div className="mt-8 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center">
             <Link
               to="/customer"
-              className="d-btn d-btn-primary inline-flex items-center justify-center gap-2 border-0 px-8 text-base font-normal"
+              className="d-btn d-btn-primary inline-flex min-h-12 items-center justify-center gap-2 border-0 px-8 text-base font-normal"
             >
-              <Coffee className="h-5 w-5" aria-hidden />
+              <img src={torletLogo} alt="Torlet logo" className="h-5 w-5 object-contain" />
               {t("landing.ctaGuest")}
             </Link>
             <Link
               to="/admin/login"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d4c4a8] bg-[#faf7f2] px-8 py-3 text-base font-medium text-[#5d4e37] transition hover:border-[#8b6f47] hover:bg-[#f0e6d8]"
+              className="d-btn inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[#d4c4a8] bg-[#faf7f2] px-8 text-base font-normal text-[#5d4e37] transition hover:border-[#8b6f47] hover:bg-[#f0e6d8]"
             >
               <LayoutDashboard className="h-5 w-5" aria-hidden />
               {t("landing.ctaAdmin")}

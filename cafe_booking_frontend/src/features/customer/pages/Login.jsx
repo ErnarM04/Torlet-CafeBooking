@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Ban, Coffee } from "lucide-react";
+import { Ban } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useAuth from "../../../hooks/useAuth";
 import { Link, Navigate, useNavigate } from "react-router";
+import torletLogo from "../../../assets/torlet-logo.png";
 
 function Login(){
     const { t } = useTranslation();
@@ -38,7 +39,7 @@ function Login(){
         <div className="flex flex-1 flex-col w-full min-w-0 items-center justify-center gap-8 bg-[#FAF7F2] px-4 py-8">
             <div className="flex flex-col items-center">
                 <div className="flex flex-row gap-3 items-center">
-                    <Coffee className="p-3 bg-[#8B6F47] rounded-full" size={56} color="white"/>
+                    <img src={torletLogo} alt="Torlet logo" className="h-14 w-14 rounded-xl object-contain"/>
                     <p className="text-[#5D4E37] text-3xl font-bold">{t("customer.loginTitle")}</p>
                 </div>
                 <p className="text-base text-[#7D6E5C]">{t("customer.loginSubtitle")}</p>

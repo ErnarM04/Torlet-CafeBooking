@@ -31,7 +31,7 @@ function Profile(){
                         <User className="bg-[#8B6F47] p-5 rounded-full w-20 h-20" size={40} color="white"/>
                         <div className="text-start min-w-0">
                             <p className="text-[#5D4E37] text-xl sm:text-2xl break-words">{first_name + " " + last_name}</p>
-                            <p className="text-[#7D6E5C] text-base">Cafe Cozy Member</p>
+                            <p className="text-[#7D6E5C] text-base">Torlet Member</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">

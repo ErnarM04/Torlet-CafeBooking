@@ -117,6 +117,33 @@ class BookingIntegrationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('already booked', str(response.data).lower())
 
+    def test_availability_includes_table_statuses(self):
+        Booking.objects.create(
+            customer=self.customer,
+            restaurant=self.restaurant,
+            location=self.location,
+            table=self.table_1,
+            booking_date=self.booking_date,
+            booking_time=self.booking_time,
+            number_of_guests=2,
+            status='confirmed',
+        )
+
+        response = self.client.get(
+            "/api/bookings/availability/",
+            {
+                "location": str(self.location.location_id),
+                "booking_date": self.booking_date.isoformat(),
+                "booking_time": self.booking_time.strftime("%H:%M:%S"),
+                "number_of_guests": 2,
+                "duration_minutes": 120,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        statuses = response.data.get("table_statuses") or {}
+        self.assertEqual(statuses.get(str(self.table_1.table_id)), "booked")
+        self.assertIn(statuses.get(str(self.table_2.table_id)), ("available", "booked"))
+
     def test_cancel_booking_updates_status_and_counters(self):
         booking = Booking.objects.create(
             customer=self.customer,

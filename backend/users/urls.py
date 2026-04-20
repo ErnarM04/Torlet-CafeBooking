@@ -4,6 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('login/', PhoneTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('sms/send/', SmsSendView.as_view(), name='sms_send'),
+    path('sms/verify/', SmsVerifyView.as_view(), name='sms_verify'),
     path('register/', RegisterView.as_view(), name='register'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('test/', TestProtectedView.as_view()),

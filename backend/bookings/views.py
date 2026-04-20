@@ -134,10 +134,18 @@ class BookingViewSet(
             number_of_guests=data['number_of_guests'],
             duration_minutes=data['duration_minutes'],
         )
+        statuses = BookingService.table_statuses(
+            location=data["location"],
+            booking_date=data["booking_date"],
+            booking_time=data["booking_time"],
+            number_of_guests=data["number_of_guests"],
+            duration_minutes=data["duration_minutes"],
+        )
 
         return Response(
             {
                 'is_available': availability['is_available'],
                 'available_table_ids': [str(table.table_id) for table in availability['available_tables']],
+                'table_statuses': statuses,
             }
         )

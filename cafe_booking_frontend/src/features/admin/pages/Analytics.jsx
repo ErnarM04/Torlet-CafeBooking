@@ -35,7 +35,10 @@ function PKICard({ title, data, Icon, comment }) {
         <p className="text-3xl font-semibold text-[#3D3935]">{data}</p>
         {comment ? <p className="text-sm text-[#7A7269]">{comment}</p> : null}
       </div>
-      <Icon className="h-12 w-12 shrink-0 rounded-xl bg-[#8B6F47]/10 p-3" color="#8B6F47" />
+      {React.createElement(Icon, {
+        className: "h-12 w-12 shrink-0 rounded-xl bg-[#8B6F47]/10 p-3",
+        color: "#8B6F47",
+      })}
     </div>
   );
 }
@@ -43,7 +46,11 @@ function PKICard({ title, data, Icon, comment }) {
 function SummaryCard({ Icon, title, content, stroke, fill }) {
   return (
     <div className="admin-surface flex flex-col items-start p-5 md:p-6.25">
-      <Icon style={{ backgroundColor: fill }} className="h-10 w-10 rounded-xl p-2" color={stroke} />
+      {React.createElement(Icon, {
+        style: { backgroundColor: fill },
+        className: "h-10 w-10 rounded-xl p-2",
+        color: stroke,
+      })}
       <p className="text-base font-semibold text-[#3D3935]">{title}</p>
       <p className="text-left text-sm text-[#7A7269]">{content}</p>
     </div>

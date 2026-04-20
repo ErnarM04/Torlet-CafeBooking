@@ -4,7 +4,7 @@ import useRestaurants from "../../../hooks/useRestaurants";
 import { useNavigate } from "react-router";
 
 export default function CafeList() {
-  const { restaurants, loading, error, fetchRestaurants } = useRestaurants();
+  const { restaurants, loading, fetchRestaurants } = useRestaurants();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import {
-  Coffee,
   LayoutDashboard,
   Building2,
   MapPin,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
+import torletLogo from "../../../assets/torlet-logo.png";
 
 const PAGES = [
   { path: "dashboard", navKey: "dashboard", Icon: LayoutDashboard },
@@ -43,7 +43,7 @@ export default function NavMenu() {
   return (
     <div className="w-full lg:max-w-64 bg-white border-b lg:border-b-0 lg:border-r border-[#8B6F47]/15">
       <div className="flex gap-2 p-4 md:p-6">
-        <Coffee className="bg-[#8B6F47] w-10 h-10 rounded-xl p-2" color="white" />
+        <img src={torletLogo} alt="Torlet logo" className="h-10 w-10 rounded-xl object-contain" />
         <div className="flex flex-col items-start min-w-0">
           <p className="text-base text-[#3D3935] font-semibold truncate">{t("admin.brand")}</p>
           <p className="text-xs text-[#7A7269]">{t("admin.brandSub")}</p>
@@ -58,7 +58,7 @@ export default function NavMenu() {
               key={path}
               className="flex bg-[#8B6F47] rounded-xl items-center justify-start gap-2 md:gap-3 p-3 cursor-pointer whitespace-nowrap"
             >
-              <Icon className="w-5 h-5 shrink-0" color="white" />
+              {React.createElement(Icon, { className: "w-5 h-5 shrink-0", color: "white" })}
               <p className="text-base text-white">{label}</p>
             </div>
           ) : (
@@ -67,7 +67,7 @@ export default function NavMenu() {
               className="flex items-center justify-start gap-2 md:gap-3 p-3 rounded-xl cursor-pointer whitespace-nowrap hover:bg-[#F5EFE7]"
               to={`/admin/${path}`}
             >
-              <Icon className="w-5 h-5 shrink-0" />
+              {React.createElement(Icon, { className: "w-5 h-5 shrink-0" })}
               <p className="text-base">{label}</p>
             </Link>
           );

@@ -25,7 +25,10 @@ function PKICard({ title, data, Icon, comment }) {
         <p className="text-3xl font-semibold text-[#3D3935]">{data}</p>
         {comment ? <p className="text-sm text-[#7A7269]">{comment}</p> : null}
       </div>
-      <Icon className="h-12 w-12 shrink-0 rounded-xl bg-[#8B6F47]/10 p-3" color="#8B6F47" />
+      {React.createElement(Icon, {
+        className: "h-12 w-12 shrink-0 rounded-xl bg-[#8B6F47]/10 p-3",
+        color: "#8B6F47",
+      })}
     </div>
   );
 }

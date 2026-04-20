@@ -67,7 +67,7 @@ class Command(BaseCommand):
 
         # --- Restaurant 1 ---
         r1, _ = Restaurant.objects.get_or_create(
-            name="Cafe Cozy — Абая (демо)",
+            name="Torlet Cafe — Абая (демо)",
             defaults={
                 "description": "Уютное кафе в центре: завтраки, кофе и бронь столов онлайн.",
                 "cuisine_type": "Европейская, кофе",
@@ -180,17 +180,53 @@ class Command(BaseCommand):
             },
         )
 
-        Table.objects.get_or_create(
-            location=loc2,
-            table_number="A1",
-            defaults={
-                "table_type": "terrace",
-                "min_guests": 2,
-                "max_guests": 4,
-                "is_available": True,
-                "is_active": True,
-            },
-        )
+        # Bistro Nomad hall layout copied from the provided floor-plan image.
+        # 1024x512 reference proportions are used for easier visual matching in Konva.
+        nomad_tables = [
+            # Top row (4 small round tables)
+            {"table_number": "N1", "table_type": "indoor", "min_guests": 1, "max_guests": 2, "shape": "round", "radius": 24, "position_x": 286, "position_y": 96, "rotation": 0},
+            {"table_number": "N2", "table_type": "indoor", "min_guests": 1, "max_guests": 2, "shape": "round", "radius": 24, "position_x": 386, "position_y": 96, "rotation": 0},
+            {"table_number": "N3", "table_type": "indoor", "min_guests": 1, "max_guests": 2, "shape": "round", "radius": 24, "position_x": 558, "position_y": 96, "rotation": 0},
+            {"table_number": "N4", "table_type": "indoor", "min_guests": 1, "max_guests": 2, "shape": "round", "radius": 24, "position_x": 711, "position_y": 96, "rotation": 0},
+
+            # Middle row (5 vertical 4-seat tables)
+            {"table_number": "N5", "table_type": "indoor", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 70, "height": 92, "position_x": 98, "position_y": 214, "rotation": 0},
+            {"table_number": "N6", "table_type": "indoor", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 70, "height": 92, "position_x": 241, "position_y": 214, "rotation": 0},
+            {"table_number": "N7", "table_type": "indoor", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 70, "height": 92, "position_x": 385, "position_y": 214, "rotation": 0},
+            {"table_number": "N8", "table_type": "indoor", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 70, "height": 92, "position_x": 530, "position_y": 214, "rotation": 0},
+            {"table_number": "N9", "table_type": "indoor", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 70, "height": 92, "position_x": 673, "position_y": 214, "rotation": 0},
+
+            # Bottom-left booths
+            {"table_number": "B1", "table_type": "private", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 86, "height": 62, "position_x": 66, "position_y": 410, "rotation": 0},
+            {"table_number": "B2", "table_type": "private", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 86, "height": 62, "position_x": 214, "position_y": 410, "rotation": 0},
+            {"table_number": "B3", "table_type": "private", "min_guests": 2, "max_guests": 4, "shape": "rect", "width": 86, "height": 62, "position_x": 358, "position_y": 410, "rotation": 0},
+
+            # Bottom-right large shared table
+            {"table_number": "G1", "table_type": "indoor", "min_guests": 4, "max_guests": 8, "shape": "rect", "width": 150, "height": 78, "position_x": 784, "position_y": 380, "rotation": 0},
+        ]
+
+        for row in nomad_tables:
+            Table.objects.update_or_create(
+                location=loc2,
+                table_number=row["table_number"],
+                defaults={
+                    "table_type": row["table_type"],
+                    "min_guests": row["min_guests"],
+                    "max_guests": row["max_guests"],
+                    "shape": row["shape"],
+                    "width": row.get("width"),
+                    "height": row.get("height"),
+                    "radius": row.get("radius"),
+                    "position_x": row["position_x"],
+                    "position_y": row["position_y"],
+                    "rotation": row.get("rotation", 0),
+                    "is_available": True,
+                    "is_active": True,
+                },
+            )
+
+        planned_numbers = [row["table_number"] for row in nomad_tables]
+        Table.objects.filter(location=loc2).exclude(table_number__in=planned_numbers).update(is_active=False)
 
         TimeSlot.objects.get_or_create(
             location=loc2,

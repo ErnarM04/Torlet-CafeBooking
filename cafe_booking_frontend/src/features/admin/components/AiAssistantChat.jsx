@@ -77,7 +77,7 @@ export default function AiAssistantChat({ open, onClose }) {
               >
                 AI Assistant
               </p>
-              <p className="truncate text-xs text-[#7A7269]">CafeAdmin</p>
+              <p className="truncate text-xs text-[#7A7269]">Torlet Admin</p>
             </div>
           </div>
           <button

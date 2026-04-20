@@ -108,6 +108,43 @@ class BookingService:
         }
 
     @classmethod
+    def table_statuses(
+        cls,
+        *,
+        location,
+        booking_date,
+        booking_time,
+        number_of_guests,
+        duration_minutes=120,
+    ):
+        """
+        Return table statuses for a time slot.
+
+        Statuses:
+        - inactive: table is not active or not available flag
+        - booked: conflicts with an active booking for the window OR does not fit guest count
+        - available: active + fits guest count + no conflicts
+        """
+        tables = Table.objects.filter(location=location).order_by("table_number")
+        out = {}
+        for table in tables:
+            if not table.is_active or not table.is_available:
+                out[str(table.table_id)] = "inactive"
+                continue
+            if not table.check_capacity(number_of_guests):
+                out[str(table.table_id)] = "booked"
+                continue
+            conflict = cls.has_conflict(
+                location=location,
+                booking_date=booking_date,
+                booking_time=booking_time,
+                duration_minutes=duration_minutes,
+                table=table,
+            )
+            out[str(table.table_id)] = "booked" if conflict else "available"
+        return out
+
+    @classmethod
     @transaction.atomic
     def create_booking(
         cls,
