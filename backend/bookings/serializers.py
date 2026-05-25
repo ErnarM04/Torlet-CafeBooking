@@ -6,10 +6,53 @@ from rest_framework import serializers
 from cafes.models import Location, Restaurant, Table
 from users.models import Customer
 
-from .models import Booking
+from .models import Booking, BookingEventLog, BookingNotification
+
+
+class BookingEventLogSerializer(serializers.ModelSerializer):
+    actor_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BookingEventLog
+        fields = (
+            'event_id',
+            'booking',
+            'actor',
+            'actor_name',
+            'action',
+            'message',
+            'created_at',
+        )
+        read_only_fields = fields
+
+    def get_actor_name(self, obj):
+        if not obj.actor:
+            return 'System'
+        name = f"{obj.actor.first_name} {obj.actor.last_name}".strip()
+        return name or obj.actor.phone_number
+
+
+class BookingNotificationSerializer(serializers.ModelSerializer):
+    booking_number = serializers.CharField(source='booking.booking_number', read_only=True)
+
+    class Meta:
+        model = BookingNotification
+        fields = (
+            'notification_id',
+            'booking',
+            'booking_number',
+            'kind',
+            'title',
+            'message',
+            'is_read',
+            'created_at',
+        )
+        read_only_fields = fields
 
 
 class BookingSerializer(serializers.ModelSerializer):
+    event_logs = BookingEventLogSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booking
         fields = (
@@ -31,6 +74,7 @@ class BookingSerializer(serializers.ModelSerializer):
             'completed_at',
             'updated_at',
             'cancellation_reason',
+            'event_logs',
         )
         read_only_fields = (
             'booking_id',
@@ -43,6 +87,7 @@ class BookingSerializer(serializers.ModelSerializer):
             'completed_at',
             'updated_at',
             'cancellation_reason',
+            'event_logs',
         )
 
 
@@ -100,6 +145,7 @@ class BookingCancelSerializer(serializers.Serializer):
 
 
 class StaffBookingSerializer(serializers.ModelSerializer):
+    event_logs = BookingEventLogSerializer(many=True, read_only=True)
     customer_phone = serializers.CharField(
         source="customer.user.phone_number", read_only=True
     )
@@ -143,6 +189,7 @@ class StaffBookingSerializer(serializers.ModelSerializer):
             "updated_at",
             "cancellation_reason",
             "assigned_by",
+            "event_logs",
         )
         read_only_fields = fields
 

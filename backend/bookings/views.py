@@ -7,8 +7,13 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema,
 
 from users.models import Customer
 
-from .models import Booking
-from .serializers import BookingCancelSerializer, BookingCreateSerializer, BookingSerializer
+from .models import Booking, BookingNotification
+from .serializers import (
+    BookingCancelSerializer,
+    BookingCreateSerializer,
+    BookingNotificationSerializer,
+    BookingSerializer,
+)
 from .services import BookingService
 
 
@@ -149,3 +154,37 @@ class BookingViewSet(
                 'table_statuses': statuses,
             }
         )
+
+
+@extend_schema_view(
+    list=extend_schema(tags=['Notifications'], summary='List current user notifications'),
+    partial_update=extend_schema(tags=['Notifications'], summary='Mark notification as read/unread'),
+)
+class NotificationViewSet(
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BookingNotificationSerializer
+    lookup_field = 'notification_id'
+    lookup_value_regex = '[0-9a-f-]{36}'
+    http_method_names = ['get', 'patch', 'head', 'options']
+
+    def get_queryset(self):
+        try:
+            customer = self.request.user.customer_profile
+        except Customer.DoesNotExist:
+            return BookingNotification.objects.none()
+
+        return BookingNotification.objects.select_related(
+            'booking',
+            'customer__user',
+        ).filter(customer=customer)
+
+    def partial_update(self, request, *args, **kwargs):
+        notification = self.get_object()
+        is_read = request.data.get('is_read', True)
+        notification.is_read = bool(is_read)
+        notification.save(update_fields=['is_read'])
+        return Response(self.get_serializer(notification).data)

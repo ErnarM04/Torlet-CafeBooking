@@ -1,16 +1,78 @@
 from datetime import datetime, timedelta
 
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import F
+from django.conf import settings
 
 from cafes.models import Location, Restaurant, Table
 from users.models import Customer
 
-from .models import Booking
+from .models import Booking, BookingEventLog, BookingNotification
 
 
 class BookingService:
+    STATUS_MESSAGES = {
+        'pending': ('Booking received', 'Your booking request has been created and is waiting for confirmation.'),
+        'confirmed': ('Booking confirmed', 'Your booking has been confirmed by the restaurant.'),
+        'seated': ('Guests seated', 'The restaurant marked your booking as seated.'),
+        'completed': ('Booking completed', 'Your visit has been marked as completed.'),
+        'cancelled': ('Booking cancelled', 'Your booking has been cancelled.'),
+        'no_show': ('Marked as no-show', 'The restaurant marked this booking as no-show.'),
+    }
+
+    @classmethod
+    def record_event(cls, *, booking, action, actor=None, message=''):
+        return BookingEventLog.objects.create(
+            booking=booking,
+            actor=actor,
+            action=action,
+            message=message,
+        )
+
+    @classmethod
+    def notify_customer(cls, *, booking, kind, title, message):
+        notification = BookingNotification.objects.create(
+            customer=booking.customer,
+            booking=booking,
+            kind=kind,
+            title=title,
+            message=message,
+        )
+        user_email = booking.customer.user.email
+        if user_email:
+            send_mail(
+                subject=title,
+                message=message,
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
+                recipient_list=[user_email],
+                fail_silently=True,
+            )
+        return notification
+
+    @classmethod
+    def record_status_change(cls, *, booking, status_value, actor=None, reason=''):
+        title, message = cls.STATUS_MESSAGES.get(
+            status_value,
+            ('Booking updated', 'Your booking status has been updated.'),
+        )
+        if reason:
+            message = f"{message} Reason: {reason}"
+
+        cls.record_event(
+            booking=booking,
+            actor=actor,
+            action=f'booking_{status_value}',
+            message=message,
+        )
+        return cls.notify_customer(
+            booking=booking,
+            kind=f'booking_{status_value}' if status_value != 'pending' else 'booking_created',
+            title=title,
+            message=message,
+        )
+
     @staticmethod
     def _booking_window(booking_date, booking_time, duration_minutes):
         start = datetime.combine(booking_date, booking_time)
@@ -208,6 +270,11 @@ class BookingService:
             status=status,
         )
         Customer.objects.filter(pk=customer.pk).update(total_bookings=F('total_bookings') + 1)
+        cls.record_status_change(
+            booking=booking,
+            status_value='pending',
+            actor=customer.user,
+        )
         return booking
 
     @classmethod
@@ -218,5 +285,11 @@ class BookingService:
         booking.cancel(reason=reason)
         Customer.objects.filter(pk=customer.pk).update(
             cancelled_bookings=F('cancelled_bookings') + 1
+        )
+        cls.record_status_change(
+            booking=booking,
+            status_value='cancelled',
+            actor=customer.user,
+            reason=reason,
         )
         return booking

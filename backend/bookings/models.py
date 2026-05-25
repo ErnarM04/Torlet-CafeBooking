@@ -1,5 +1,6 @@
 import uuid
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -148,3 +149,82 @@ class Booking(models.Model):
             raise ValidationError('Only pending or confirmed bookings can be marked as no_show.')
         self.status = 'no_show'
         self.save(update_fields=['status', 'updated_at'])
+
+
+class BookingNotification(models.Model):
+    KIND_CHOICES = [
+        ('booking_created', 'Booking Created'),
+        ('booking_confirmed', 'Booking Confirmed'),
+        ('booking_seated', 'Guests Seated'),
+        ('booking_cancelled', 'Booking Cancelled'),
+        ('booking_completed', 'Booking Completed'),
+        ('booking_no_show', 'No Show'),
+        ('booking_updated', 'Booking Updated'),
+    ]
+
+    notification_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        primary_key=True,
+        unique=True,
+    )
+    customer = models.ForeignKey(
+        'users.Customer',
+        on_delete=models.CASCADE,
+        related_name='notifications',
+    )
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='notifications',
+    )
+    kind = models.CharField(max_length=40, choices=KIND_CHOICES)
+    title = models.CharField(max_length=160)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'booking_notifications'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['customer', 'is_read', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.customer.user.phone_number} - {self.title}"
+
+
+class BookingEventLog(models.Model):
+    event_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        primary_key=True,
+        unique=True,
+    )
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='event_logs',
+    )
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='booking_events',
+    )
+    action = models.CharField(max_length=80)
+    message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'booking_event_logs'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['booking', '-created_at']),
+            models.Index(fields=['action', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.booking.booking_number} - {self.action}"

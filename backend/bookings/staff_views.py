@@ -16,6 +16,7 @@ from .serializers import (
     StaffCustomerSerializer,
     StaffCustomerUpdateSerializer,
 )
+from .services import BookingService
 
 
 @extend_schema_view(
@@ -64,6 +65,11 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
             booking.confirm()
         except ValidationError as exc:
             return Response({"detail": exc.messages}, status=status.HTTP_400_BAD_REQUEST)
+        BookingService.record_status_change(
+            booking=booking,
+            status_value="confirmed",
+            actor=request.user,
+        )
         booking.refresh_from_db()
         return Response(StaffBookingSerializer(booking).data)
 
@@ -78,6 +84,11 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
             )
         booking.status = "seated"
         booking.save(update_fields=["status", "updated_at"])
+        BookingService.record_status_change(
+            booking=booking,
+            status_value="seated",
+            actor=request.user,
+        )
         return Response(StaffBookingSerializer(booking).data)
 
     @extend_schema(tags=["Staff — Bookings"], summary="Complete booking")
@@ -88,6 +99,11 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
             booking.complete()
         except ValidationError as exc:
             return Response({"detail": exc.messages}, status=status.HTTP_400_BAD_REQUEST)
+        BookingService.record_status_change(
+            booking=booking,
+            status_value="completed",
+            actor=request.user,
+        )
         booking.refresh_from_db()
         return Response(StaffBookingSerializer(booking).data)
 
@@ -99,6 +115,11 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
             booking.mark_no_show()
         except ValidationError as exc:
             return Response({"detail": exc.messages}, status=status.HTTP_400_BAD_REQUEST)
+        BookingService.record_status_change(
+            booking=booking,
+            status_value="no_show",
+            actor=request.user,
+        )
         booking.refresh_from_db()
         return Response(StaffBookingSerializer(booking).data)
 
@@ -117,6 +138,12 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
             booking.cancel(reason=reason)
         except ValidationError as exc:
             return Response({"detail": exc.messages}, status=status.HTTP_400_BAD_REQUEST)
+        BookingService.record_status_change(
+            booking=booking,
+            status_value="cancelled",
+            actor=request.user,
+            reason=reason,
+        )
         booking.refresh_from_db()
         return Response(StaffBookingSerializer(booking).data)
 
@@ -132,6 +159,12 @@ class StaffBookingViewSet(viewsets.ReadOnlyModelViewSet):
         booking = self.get_object()
         booking.assigned_by = profile
         booking.save(update_fields=["assigned_by", "updated_at"])
+        BookingService.record_event(
+            booking=booking,
+            action="booking_assigned",
+            actor=request.user,
+            message="Booking was assigned to a staff member.",
+        )
         return Response(StaffBookingSerializer(booking).data)
 
 

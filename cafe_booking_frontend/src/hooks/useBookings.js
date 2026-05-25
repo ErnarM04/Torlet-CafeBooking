@@ -4,6 +4,7 @@ import useAuth from "./useAuth";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 const BOOKINGS_URL = `${API_BASE_URL}/bookings`;
+const NOTIFICATIONS_URL = `${API_BASE_URL}/notifications`;
 const CAFES_URL = `${API_BASE_URL}/cafes`;
 
 async function authorizedRequest(config) {
@@ -58,6 +59,9 @@ const useBookings = create((set, get) => ({
   tablesLoading: false,
   tablesError: "",
   selectedTableId: "",
+  notifications: [],
+  notificationsLoading: false,
+  notificationsError: "",
 
   fetchBookings: async () => {
     set({ loading: true, error: "" });
@@ -73,6 +77,38 @@ const useBookings = create((set, get) => ({
         loading: false,
       });
     }
+  },
+
+  fetchNotifications: async () => {
+    set({ notificationsLoading: true, notificationsError: "" });
+    try {
+      const response = await authorizedRequest({
+        method: "get",
+        url: `${NOTIFICATIONS_URL}/`,
+      });
+      set({ notifications: response.data || [], notificationsLoading: false });
+    } catch (err) {
+      set({
+        notificationsError:
+          err.response?.data?.detail || err.message || "Failed to load notifications",
+        notificationsLoading: false,
+      });
+    }
+  },
+
+  markNotificationRead: async (notificationId) => {
+    const response = await authorizedRequest({
+      method: "patch",
+      url: `${NOTIFICATIONS_URL}/${notificationId}/`,
+      data: { is_read: true },
+    });
+
+    set({
+      notifications: get().notifications.map((notification) =>
+        notification.notification_id === notificationId ? response.data : notification,
+      ),
+    });
+    return response.data;
   },
 
   fetchAvailableTables: async (locationId, bookingDate, bookingTime, numberOfGuests) => {
@@ -165,6 +201,7 @@ const useBookings = create((set, get) => ({
     });
 
     set({ bookings: [response.data, ...get().bookings] });
+    get().fetchNotifications();
     return response.data;
   },
 
@@ -180,6 +217,7 @@ const useBookings = create((set, get) => ({
         booking.booking_id === bookingId ? response.data : booking,
       ),
     });
+    get().fetchNotifications();
     return response.data;
   },
 }));
