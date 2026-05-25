@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema, extend_schema_view
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from bookings.services import BookingService
@@ -17,6 +18,7 @@ from .serializers import (
     RestaurantCreateSerializer,
     RestaurantDetailSerializer,
     RestaurantListSerializer,
+    ReviewSerializer,
     TableCreateSerializer,
     TableSerializer,
     TimeSlotCreateSerializer,
@@ -73,6 +75,34 @@ class RestaurantViewSet(SoftDeactivateMixin, viewsets.ModelViewSet):
             locs = locs.filter(is_active=True)
         serializer = LocationListSerializer(locs, many=True)
         return Response(serializer.data)
+
+    @extend_schema(tags=['Restaurants'], summary='List or create restaurant reviews')
+    @action(detail=True, methods=['get', 'post'], permission_classes=[AllowAny])
+    def reviews(self, request, restaurant_id=None):
+        restaurant = self.get_object()
+
+        if request.method == 'GET':
+            reviews = restaurant.reviews.filter(is_approved=True)
+            serializer = ReviewSerializer(reviews, many=True)
+            return Response(serializer.data)
+
+        if not request.user.is_authenticated:
+            return Response(
+                {'detail': 'Log in to leave a review.'},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        display_name = f"{request.user.first_name} {request.user.last_name}".strip()
+        if not display_name:
+            display_name = request.user.phone_number
+
+        serializer = ReviewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        review = serializer.save(restaurant=restaurant, name=display_name)
+        response_data = ReviewSerializer(review).data
+        response_data['restaurant_rating'] = restaurant.rating
+        response_data['restaurant_total_reviews'] = restaurant.total_reviews
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema_view(

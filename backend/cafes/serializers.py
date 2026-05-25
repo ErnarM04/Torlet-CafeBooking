@@ -4,7 +4,7 @@ from rest_framework import serializers
 from drf_spectacular.utils import OpenApiTypes, extend_schema_field
 from users.permissions import is_staff_user
 
-from .models import Location, Restaurant, Table, TimeSlot
+from .models import Location, Restaurant, Review, Table, TimeSlot
 
 
 class RestaurantListSerializer(serializers.ModelSerializer):
@@ -65,6 +65,28 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
         if not (request and request.user.is_authenticated and is_staff_user(request.user)):
             qs = qs.filter(is_active=True)
         return LocationListSerializer(qs, many=True).data
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    """Serializer for customer reviews."""
+
+    class Meta:
+        model = Review
+        fields = [
+            'review_id',
+            'restaurant',
+            'name',
+            'rating',
+            'text',
+            'created_at',
+        ]
+        read_only_fields = ['review_id', 'restaurant', 'name', 'created_at']
+
+    def validate_text(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Review text is required.")
+        return value
 
 
 class LocationListSerializer(serializers.ModelSerializer):

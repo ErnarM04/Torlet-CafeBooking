@@ -134,7 +134,59 @@ class Restaurant(models.Model):
         #     is_approved=True
         # ).count()
         # self.save(update_fields=['rating', 'total_reviews'])
-        pass
+        approved_reviews = self.reviews.filter(is_approved=True)
+        result = approved_reviews.aggregate(Avg('rating'))
+        self.rating = round(result['rating__avg'] or 0.0, 1)
+        self.total_reviews = approved_reviews.count()
+        self.save(update_fields=['rating', 'total_reviews'])
+
+
+class Review(models.Model):
+    """Customer review for a restaurant."""
+
+    review_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        primary_key=True,
+        verbose_name='Review ID'
+    )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Restaurant'
+    )
+    name = models.CharField(max_length=100, verbose_name='Customer name')
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='Rating'
+    )
+    text = models.TextField(verbose_name='Review text')
+    is_approved = models.BooleanField(default=True, verbose_name='Approved')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'reviews'
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['restaurant', 'is_approved', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.restaurant.name} - {self.rating}/5 by {self.name}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.restaurant.calculate_rating()
+
+    def delete(self, *args, **kwargs):
+        restaurant = self.restaurant
+        result = super().delete(*args, **kwargs)
+        restaurant.calculate_rating()
+        return result
 
 
 class Location(models.Model):
