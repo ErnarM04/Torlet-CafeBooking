@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5433:5432"
+    volumes:
+      - diploma_cafe_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "until python manage.py migrate; do
+      echo 'Waiting for PostgreSQL...'; sleep 2; done &&
+      python manage.py seed_demo &&
+      python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://django:8000/api
+    depends_on:
+      - django
+    ports:
+      - "5173:5173"
+
+volumes:
+  diploma_cafe_pgdata:

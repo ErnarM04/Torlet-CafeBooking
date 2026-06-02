@@ -1,16 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Bot, Send, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { adminRequest } from "../../../hooks/useAdminApi";
 
 export default function AiAssistantChat({ open, onClose }) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: "welcome",
-      role: "assistant",
-      text: "Hi! I’m your cafe admin assistant. Ask about bookings, tables, or today’s summary.",
-    },
-  ]);
+  const [sending, setSending] = useState(false);
+  const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        text: t("admin.aiWelcome"),
+      },
+    ]);
+  }, [open, t]);
 
   useEffect(() => {
     if (!open) return;
@@ -26,23 +35,43 @@ export default function AiAssistantChat({ open, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  function handleSend(e) {
+  async function handleSend(e) {
     e.preventDefault();
     const text = input.trim();
-    if (!text) return;
+    if (!text || sending) return;
     const userMsg = { id: `u-${Date.now()}`, role: "user", text };
     setMessages((m) => [...m, userMsg]);
     setInput("");
-    setTimeout(() => {
+    setSending(true);
+    const history = messages
+      .filter((m) => m.id !== "welcome")
+      .slice(-10)
+      .map((m) => ({ role: m.role, content: m.text }));
+    try {
+      const res = await adminRequest({
+        method: "post",
+        path: "/staff/assistant/chat/",
+        data: { message: text, history },
+      });
+      const reply = res.data?.reply || t("admin.aiError");
       setMessages((m) => [
         ...m,
-        {
-          id: `a-${Date.now()}`,
-          role: "assistant",
-          text: "This is a demo reply. Connect your AI backend here to get real answers.",
-        },
+        { id: `a-${Date.now()}`, role: "assistant", text: reply },
       ]);
-    }, 400);
+    } catch (err) {
+      const status = err.response?.status;
+      const detail =
+        err.response?.data?.detail ||
+        (status === 503 ? t("admin.aiNotConfigured") : null) ||
+        err.message ||
+        t("admin.aiError");
+      setMessages((m) => [
+        ...m,
+        { id: `a-${Date.now()}`, role: "assistant", text: String(detail) },
+      ]);
+    } finally {
+      setSending(false);
+    }
   }
 
   if (!open) return null;
@@ -75,9 +104,11 @@ export default function AiAssistantChat({ open, onClose }) {
                 id="ai-chat-title"
                 className="truncate text-sm font-semibold text-[#3D3935]"
               >
-                AI Assistant
+                {t("admin.aiAssistant")}
               </p>
-              <p className="truncate text-xs text-[#7A7269]">Torlet Admin</p>
+              <p className="truncate text-xs text-[#7A7269]">
+                {t("admin.aiSubtitle")}
+              </p>
             </div>
           </div>
           <button
@@ -90,7 +121,7 @@ export default function AiAssistantChat({ open, onClose }) {
           </button>
         </div>
 
-        <div className="flex max-h-[min(360px,50vh)] flex-col gap-2 overflow-y-auto px-3 py-3">
+        <div className="flex max-h-[min(360px,50vh)] flex-col gap-2 overflow-y-auto px-3 py-3 whitespace-pre-wrap">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -103,6 +134,9 @@ export default function AiAssistantChat({ open, onClose }) {
               {msg.text}
             </div>
           ))}
+          {sending ? (
+            <p className="mr-8 text-xs text-[#7A7269]">{t("admin.aiThinking")}</p>
+          ) : null}
           <div ref={bottomRef} />
         </div>
 
@@ -114,12 +148,14 @@ export default function AiAssistantChat({ open, onClose }) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask something…"
-            className="d-input flex-1 rounded-xl border border-[#8B6F47]/15 bg-[#FAF8F5] text-sm text-[#3D3935] placeholder:text-[#7A7269]"
+            placeholder={t("admin.aiPlaceholder")}
+            disabled={sending}
+            className="d-input flex-1 rounded-xl border border-[#8B6F47]/15 bg-[#FAF8F5] text-sm text-[#3D3935] placeholder:text-[#7A7269] disabled:opacity-60"
           />
           <button
             type="submit"
-            className="d-btn d-btn-primary rounded-xl px-3"
+            disabled={sending || !input.trim()}
+            className="d-btn d-btn-primary rounded-xl px-3 disabled:opacity-60"
             aria-label="Send"
           >
             <Send className="h-4 w-4" />

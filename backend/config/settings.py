@@ -12,9 +12,18 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from urllib.parse import urlparse
+
+from decouple import Config, RepositoryEnv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+_env_file = BASE_DIR / ".env"
+if _env_file.is_file():
+    _env = Config(RepositoryEnv(_env_file))
+else:
+    from decouple import config as _env
 
 
 # Quick-start development settings - unsuitable for production
@@ -126,12 +135,38 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+POSTGRES_DB = _env("POSTGRES_DB", default="")
+DATABASE_URL = _env("DATABASE_URL", default="")
+if DATABASE_URL:
+    parsed = urlparse(DATABASE_URL)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": (parsed.path or "/")[1:],
+            "USER": parsed.username or "",
+            "PASSWORD": parsed.password or "",
+            "HOST": parsed.hostname or "127.0.0.1",
+            "PORT": str(parsed.port or 5432),
+        }
     }
-}
+elif POSTGRES_DB:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": POSTGRES_DB,
+            "USER": _env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": _env("POSTGRES_PASSWORD", default=""),
+            "HOST": _env("POSTGRES_HOST", default="127.0.0.1"),
+            "PORT": _env("POSTGRES_PORT", default="5432"),
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # SMS verification (demo-friendly).
 # In production you should use a real SMS provider (e.g. Twilio) and a shared cache/DB.
@@ -181,3 +216,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Staff AI assistant — Groq free tier by default (OpenAI-compatible API)
+# Get a free key: https://console.groq.com/keys
+GROQ_API_KEY = _env("GROQ_API_KEY", default="")
+OPENAI_API_KEY = _env("OPENAI_API_KEY", default="") or GROQ_API_KEY
+OPENAI_BASE_URL = _env(
+    "OPENAI_BASE_URL",
+    default="https://api.groq.com/openai/v1",
+)
+OPENAI_MODEL = _env("OPENAI_MODEL", default="llama-3.1-8b-instant")

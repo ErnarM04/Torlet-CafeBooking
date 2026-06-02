@@ -1,0 +1,1976 @@
+[
+{
+  "model": "users.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$z2AJYJY5IqKsE6rEcKQVo3$nHOrPbqNhMOvL/9PQcceuFsf9wBk5ea2nEKxF5pusfU=",
+    "last_login": "2026-02-15T18:08:28.138Z",
+    "is_superuser": true,
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-07T16:33:04.734Z",
+    "user_id": "411c0644-a6d6-4ead-9048-9d42d315b7d4",
+    "phone_number": "87078986726",
+    "email": "",
+    "first_name": "Dias",
+    "last_name": "Nurgaliev",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 2,
+  "fields": {
+    "password": "test1234",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-07T17:26:52Z",
+    "user_id": "3b20020b-0d05-4fc0-b6a8-8fe8031c050d",
+    "phone_number": "87081294507",
+    "email": "nurgalyev.dias@gmail.com",
+    "first_name": "Asel",
+    "last_name": "Nurgalieva",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$LM4UQKcoOElaHjy4fYS7tA$nyMBpq7PeT8tZz1c8g+r0+EvF0d8K6jzNVA69NhoWCk=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-07T17:40:41.556Z",
+    "user_id": "db009799-c0dd-4333-91fa-e188a0f3ea0b",
+    "phone_number": "87771234567",
+    "email": "test@example.com",
+    "first_name": "Test",
+    "last_name": "User",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$EuKZ5Yknwz5gQ5O1XzwlDl$jlWCMVfDN+emwgkAwh229FkNQJeCNS2yrO2o77LXzM0=",
+    "last_login": "2026-02-08T16:33:22.451Z",
+    "is_superuser": true,
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-08T16:18:58.329Z",
+    "user_id": "b4155050-511f-4b0e-8ef9-b5a47a5a7c86",
+    "phone_number": "7053588874",
+    "email": "",
+    "first_name": "Dilnaz",
+    "last_name": "Zeinolla",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$xbJmEUYxFuGOpsOY8gjX9j$6bqbSbuCm0g6mWSPxu15jNiEJr3ej/p+psOCvNBgA84=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-15T12:48:10.408Z",
+    "user_id": "0a6bb004-edd1-4341-b396-90fca002be56",
+    "phone_number": "1234567890",
+    "email": "",
+    "first_name": "Test",
+    "last_name": "Staff",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 6,
+  "fields": {
+    "password": "test123",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-15T18:15:49Z",
+    "user_id": "3f34be39-a85c-40fb-a168-08c35b13d8e0",
+    "phone_number": "6767",
+    "email": "",
+    "first_name": "d",
+    "last_name": "n",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$YIS5k0kpIwx5h6Yzhl3uWz$5jLY9splba/X09G0cK93KxEggtKlgNpkPJHb1jIj4WA=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-23T06:56:48.522Z",
+    "user_id": "634868d1-3fae-43c0-8506-6acc895465b8",
+    "phone_number": "+77777777777",
+    "email": "er04@test.com",
+    "first_name": "Yernar",
+    "last_name": "Mukhtaruly",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$gFX3sp2Ke2PEBOeGV6C7dM$PuNhJ5rYgx2445pQOVxJieSIdIuVQF//TkJLt1Ot9zY=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T16:17:29.882Z",
+    "user_id": "f13d396b-2749-46e7-a886-6f0932e30f04",
+    "phone_number": "+77000000001",
+    "email": "",
+    "first_name": "Aida",
+    "last_name": "Nurlanova",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 9,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$sCTBRaIHny33StCHm56962$4EE22EYabtCaRE2ynOlglJJEEt9w6xo4i7ko5xPzRIY=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T16:17:30.325Z",
+    "user_id": "7ce954a0-e105-4074-8dac-e36e25922c3d",
+    "phone_number": "+77000000002",
+    "email": "",
+    "first_name": "Daniyar",
+    "last_name": "Ospanov",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 10,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$2B8a6X8g2CpFYMuOphNaYG$p5KzZ1vVEOUlZtmpwyxDXzX0YX+qq5i6Xp6wJTBqhsA=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-05T16:17:30.717Z",
+    "user_id": "11f8546c-9fd9-44ef-9f67-e377830b33f3",
+    "phone_number": "+77000000009",
+    "email": "",
+    "first_name": "Admin",
+    "last_name": "Demo",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 11,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$gzZTaVVwnCWhrr5OLNeqyc$2FpQ8nM58slX24qBIaLtg/vIRB23wHrwnIYuqRBRszE=",
+    "last_login": "2026-04-05T16:21:48.361Z",
+    "is_superuser": true,
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-05T16:21:33.055Z",
+    "user_id": "6c363cae-8ed6-414b-90ea-ee494512e8aa",
+    "phone_number": "12345",
+    "email": "",
+    "first_name": "Yernar",
+    "last_name": "M",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 1,
+  "fields": {
+    "customer_id": "b30ebecd-a6c6-4013-8323-181ed468eb09",
+    "total_bookings": 1,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-15T18:17:12.248Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 2,
+  "fields": {
+    "customer_id": "c111f427-f764-4e40-b44f-d5f12e5c28d4",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-07T17:27:13.976Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 3,
+  "fields": {
+    "customer_id": "000a6a7a-0211-46b1-8f06-4e03c5d7b5a6",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-07T17:40:42.362Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 4,
+  "fields": {
+    "customer_id": "f49fcd75-f015-4d6a-b775-3f5912d8601d",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-08T16:18:58.689Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 5,
+  "fields": {
+    "customer_id": "2d1109de-fc06-4735-aab0-1917621a3449",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-15T12:48:10.871Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 6,
+  "fields": {
+    "customer_id": "4aa1c0e8-73d1-4b30-87e5-737c719e794c",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-15T18:16:11.520Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 7,
+  "fields": {
+    "customer_id": "1df8440e-e77b-4aca-8343-a38457bc999b",
+    "total_bookings": 9,
+    "cancelled_bookings": 2,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-02-23T06:56:48.904Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 8,
+  "fields": {
+    "customer_id": "ba58c10f-38e0-4a90-8bcd-cf0dacdf9f9c",
+    "total_bookings": 3,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 120,
+    "preferences": {},
+    "created_at": "2026-04-05T16:17:29.884Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 9,
+  "fields": {
+    "customer_id": "d32e5167-99e5-4172-b61e-68338f1f2a6c",
+    "total_bookings": 1,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 40,
+    "preferences": {},
+    "created_at": "2026-04-05T16:17:30.327Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 10,
+  "fields": {
+    "customer_id": "c03b9848-22bd-45bb-afe0-3ffaae9350a8",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-04-05T16:17:30.718Z"
+  }
+},
+{
+  "model": "users.customer",
+  "pk": 11,
+  "fields": {
+    "customer_id": "8b6dc5b2-2194-476a-acd9-8991bab3d3df",
+    "total_bookings": 0,
+    "cancelled_bookings": 0,
+    "no_show_count": 0,
+    "loyalty_points": 0,
+    "preferences": {},
+    "created_at": "2026-04-05T16:21:33.413Z"
+  }
+},
+{
+  "model": "users.restaurantstaff",
+  "pk": 5,
+  "fields": {
+    "staff_id": "1fb32f2a-26e0-4469-8b15-470df1713aa3",
+    "created_at": "2026-02-15T12:48:10.900Z",
+    "restaurants": []
+  }
+},
+{
+  "model": "users.restaurantstaff",
+  "pk": 10,
+  "fields": {
+    "staff_id": "a69b97a1-162a-4afc-ba4c-e1b6353a222d",
+    "created_at": "2026-04-05T16:17:31.104Z",
+    "restaurants": [
+      "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f"
+    ]
+  }
+},
+{
+  "model": "cafes.restaurant",
+  "pk": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+  "fields": {
+    "name": "Cafe Cozy — Абая (демо)",
+    "description": "Уютное кафе в центре: завтраки, кофе и бронь столов онлайн.",
+    "cuisine_type": "Европейская, кофе",
+    "address": "пр. Абая 150, Алматы",
+    "city": "Almaty",
+    "latitude": "43.238949",
+    "longitude": "76.889709",
+    "images": [
+      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800"
+    ],
+    "rating": 4.7,
+    "total_reviews": 42,
+    "is_active": true,
+    "created_at": "2026-04-05T16:17:31.110Z",
+    "updated_at": "2026-04-05T16:17:31.110Z"
+  }
+},
+{
+  "model": "cafes.restaurant",
+  "pk": "83fd568e-4ab0-49b1-9597-2d26d3b37c93",
+  "fields": {
+    "name": "Nanduk",
+    "description": "Nanduk is Korean food restaurant",
+    "cuisine_type": "unknown",
+    "address": "Tole Bi 59",
+    "city": "Almaty",
+    "latitude": "45.700000",
+    "longitude": "-3.000000",
+    "images": "string",
+    "rating": 0.0,
+    "total_reviews": 0,
+    "is_active": true,
+    "created_at": "2026-02-15T18:02:33.443Z",
+    "updated_at": "2026-02-15T18:02:33.443Z"
+  }
+},
+{
+  "model": "cafes.restaurant",
+  "pk": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+  "fields": {
+    "name": "Bistro Nomad — Сейфуллина (демо)",
+    "description": "Лёгкая азиатская кухня и бар. Идеально для встреч после работы.",
+    "cuisine_type": "Азиатская фьюжн",
+    "address": "ул. Сейфуллина 500, Алматы",
+    "city": "Almaty",
+    "latitude": "43.252970",
+    "longitude": "76.914454",
+    "images": [],
+    "rating": 4.4,
+    "total_reviews": 28,
+    "is_active": true,
+    "created_at": "2026-04-05T16:17:31.141Z",
+    "updated_at": "2026-04-05T16:17:31.141Z"
+  }
+},
+{
+  "model": "cafes.location",
+  "pk": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+  "fields": {
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "address": "ул. Сейфуллина 500, Алматы",
+    "city": "Almaty",
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": "Вт–Вс 11:00–00:00",
+    "total_capacity": 48,
+    "is_active": true,
+    "created_at": "2026-04-05T16:17:31.145Z",
+    "updated_at": "2026-04-05T16:17:31.145Z"
+  }
+},
+{
+  "model": "cafes.location",
+  "pk": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+  "fields": {
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "address": "пр. Абая 150, Алматы",
+    "city": "Almaty",
+    "latitude": "43.238949",
+    "longitude": "76.889709",
+    "opening_hours": "Пн–Вс 09:00–23:00",
+    "total_capacity": 12,
+    "is_active": true,
+    "created_at": "2026-04-05T16:17:31.114Z",
+    "updated_at": "2026-04-05T16:17:31.114Z"
+  }
+},
+{
+  "model": "cafes.location",
+  "pk": "79ca2de1-e2ba-4d42-9585-5baaa73e9d33",
+  "fields": {
+    "restaurant": "83fd568e-4ab0-49b1-9597-2d26d3b37c93",
+    "address": "ToleBi59",
+    "city": "Almaty",
+    "latitude": "12.000000",
+    "longitude": "7.000000",
+    "opening_hours": "12:00-23:00",
+    "total_capacity": 50,
+    "is_active": true,
+    "created_at": "2026-02-15T18:03:25.908Z",
+    "updated_at": "2026-02-15T18:03:25.908Z"
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "1a7ecafe-848c-4fce-8900-f062a680b580",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "B2",
+    "table_type": "private",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 203,
+    "position_y": 411,
+    "shape": "rect",
+    "width": 106,
+    "height": 72,
+    "radius": null,
+    "rotation": 0,
+    "description": "Booth center",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "2533bcf5-eb18-4e02-b2e3-f7779870ac3d",
+  "fields": {
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table_number": "VIP-1",
+    "table_type": "vip",
+    "min_guests": 4,
+    "max_guests": 8,
+    "capacity": 8,
+    "position_x": 105,
+    "position_y": 50,
+    "shape": "rect",
+    "width": 90,
+    "height": 70,
+    "radius": null,
+    "rotation": 0,
+    "description": "Отдельная зона",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "3cd7661a-e485-460f-a2be-29303a640df9",
+  "fields": {
+    "location": "79ca2de1-e2ba-4d42-9585-5baaa73e9d33",
+    "table_number": "30",
+    "table_type": "indoor",
+    "min_guests": 35,
+    "max_guests": 50,
+    "capacity": 50,
+    "position_x": 89,
+    "position_y": 128,
+    "shape": "round",
+    "width": null,
+    "height": null,
+    "radius": 61,
+    "rotation": 0,
+    "description": "indoor tables",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "3e1696fe-fe7f-44ec-8828-20fbf06951e1",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N8",
+    "table_type": "indoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 499,
+    "position_y": 214,
+    "shape": "rect",
+    "width": 70,
+    "height": 92,
+    "radius": null,
+    "rotation": 0,
+    "description": "Middle row #4",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "4702cae1-f495-4bff-8a79-6fe843c05b70",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N3",
+    "table_type": "indoor",
+    "min_guests": 1,
+    "max_guests": 2,
+    "capacity": 2,
+    "position_x": 499,
+    "position_y": 72,
+    "shape": "round",
+    "width": null,
+    "height": null,
+    "radius": 24,
+    "rotation": 0,
+    "description": "Top row center-right",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "4977e74e-c619-43c3-8138-05fdfce43d2e",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N9",
+    "table_type": "indoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 652,
+    "position_y": 214,
+    "shape": "rect",
+    "width": 70,
+    "height": 92,
+    "radius": null,
+    "rotation": 0,
+    "description": "Middle row #5",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "536e9aa1-93ba-40ed-b9b6-994117a5578d",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N6",
+    "table_type": "indoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 227,
+    "position_y": 214,
+    "shape": "rect",
+    "width": 70,
+    "height": 92,
+    "radius": null,
+    "rotation": 0,
+    "description": "Middle row #2",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "6ea63b4c-0573-464c-8db0-561c7aedd107",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "A1",
+    "table_type": "terrace",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 61,
+    "position_y": 48,
+    "shape": "rect",
+    "width": 75,
+    "height": 60,
+    "radius": null,
+    "rotation": 0,
+    "description": "",
+    "is_available": true,
+    "is_active": false
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "7a6ba886-5db4-4d23-ad3b-eb70e282f489",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N5",
+    "table_type": "indoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 98,
+    "position_y": 214,
+    "shape": "rect",
+    "width": 70,
+    "height": 92,
+    "radius": null,
+    "rotation": 0,
+    "description": "Middle row #1",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "890df939-73b0-42b1-a672-2dabd5c115c4",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N7",
+    "table_type": "indoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 358,
+    "position_y": 214,
+    "shape": "rect",
+    "width": 70,
+    "height": 92,
+    "radius": null,
+    "rotation": 0,
+    "description": "Middle row #3",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "8b53d095-c281-47db-a840-7e604e384932",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "A2",
+    "table_type": "terrace",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 845,
+    "position_y": 48,
+    "shape": "rect",
+    "width": 75,
+    "height": 60,
+    "radius": null,
+    "rotation": 0,
+    "description": "",
+    "is_available": true,
+    "is_active": false
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "b02269cd-a357-498b-9763-99f828b2b83a",
+  "fields": {
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table_number": "T1",
+    "table_type": "outdoor",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 124,
+    "position_y": 363,
+    "shape": "rect",
+    "width": 96,
+    "height": 60,
+    "radius": null,
+    "rotation": 0,
+    "description": "У окна",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "b4e2b0cd-4e06-4b3f-949c-4261f99e4855",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "B3",
+    "table_type": "private",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 341,
+    "position_y": 410,
+    "shape": "rect",
+    "width": 111,
+    "height": 71,
+    "radius": null,
+    "rotation": 0,
+    "description": "Booth right",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "b825e7d3-1744-424c-af18-b8566f68dc4f",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N4",
+    "table_type": "indoor",
+    "min_guests": 1,
+    "max_guests": 2,
+    "capacity": 2,
+    "position_x": 652,
+    "position_y": 72,
+    "shape": "round",
+    "width": null,
+    "height": null,
+    "radius": 24,
+    "rotation": 0,
+    "description": "Top row right",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "d53b6fcb-63c3-4a5a-bb69-efc04be784e6",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "G1",
+    "table_type": "indoor",
+    "min_guests": 4,
+    "max_guests": 8,
+    "capacity": 8,
+    "position_x": 692,
+    "position_y": 406,
+    "shape": "rect",
+    "width": 150,
+    "height": 78,
+    "radius": null,
+    "rotation": 0,
+    "description": "Large group table",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "d7a563a2-cecc-474e-87a8-76d13288d8cc",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N1",
+    "table_type": "indoor",
+    "min_guests": 1,
+    "max_guests": 2,
+    "capacity": 2,
+    "position_x": 227,
+    "position_y": 72,
+    "shape": "round",
+    "width": null,
+    "height": null,
+    "radius": 24,
+    "rotation": 0,
+    "description": "Top row left",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "d98e34ea-4923-4988-b72d-b89ff7eb91c9",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "B1",
+    "table_type": "private",
+    "min_guests": 2,
+    "max_guests": 4,
+    "capacity": 4,
+    "position_x": 66,
+    "position_y": 410,
+    "shape": "rect",
+    "width": 107,
+    "height": 70,
+    "radius": null,
+    "rotation": 0,
+    "description": "Booth left",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.table",
+  "pk": "e1855c3b-fd5f-43a5-9f64-aa6e8e20bcfa",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table_number": "N2",
+    "table_type": "indoor",
+    "min_guests": 1,
+    "max_guests": 2,
+    "capacity": 2,
+    "position_x": 358,
+    "position_y": 72,
+    "shape": "round",
+    "width": null,
+    "height": null,
+    "radius": 24,
+    "rotation": 0,
+    "description": "Top row center-left",
+    "is_available": true,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.timeslot",
+  "pk": "6c82068b-a3f4-4d22-b0be-6063d6b34212",
+  "fields": {
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "start_time": "12:00:00",
+    "end_time": "15:00:00",
+    "duration": "3 часа",
+    "days_of_week": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "max_bookings": 12,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.timeslot",
+  "pk": "ed9040ac-c21c-479e-8de8-d948077a790a",
+  "fields": {
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "start_time": "18:00:00",
+    "end_time": "22:00:00",
+    "duration": "4 часа",
+    "days_of_week": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "max_bookings": 15,
+    "is_active": true
+  }
+},
+{
+  "model": "cafes.timeslot",
+  "pk": "f2d03599-7c56-4de9-9ca6-e7bc3c5793ad",
+  "fields": {
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "start_time": "19:00:00",
+    "end_time": "21:30:00",
+    "duration": "2.5 часа",
+    "days_of_week": [
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "max_bookings": 8,
+    "is_active": true
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "086947a3-7ce4-4a3b-b3eb-0872de96d868",
+  "fields": {
+    "booking_number": "BK-20260415-29183",
+    "customer": 7,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": "3e1696fe-fe7f-44ec-8828-20fbf06951e1",
+    "booking_date": "2026-04-16",
+    "booking_time": "12:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "",
+    "created_at": "2026-04-15T03:11:05.119Z",
+    "confirmed_at": "2026-04-15T03:11:55.749Z",
+    "cancelled_at": null,
+    "completed_at": "2026-04-15T03:12:14.041Z",
+    "updated_at": "2026-04-15T03:12:14.041Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "1ceb9d2b-75c1-437c-a14b-79760258a184",
+  "fields": {
+    "booking_number": "BK-20260405-26891",
+    "customer": 7,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": "6ea63b4c-0573-464c-8db0-561c7aedd107",
+    "booking_date": "2026-04-06",
+    "booking_time": "14:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "",
+    "created_at": "2026-04-05T18:36:23.172Z",
+    "confirmed_at": "2026-04-05T18:37:06.456Z",
+    "cancelled_at": null,
+    "completed_at": "2026-04-05T18:37:10.418Z",
+    "updated_at": "2026-04-05T18:37:12.698Z",
+    "cancellation_reason": "",
+    "assigned_by": 10
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "393bf141-6bc1-4b85-9ffe-6465220825a3",
+  "fields": {
+    "booking_number": "BK-DEMO-002",
+    "customer": 8,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": null,
+    "booking_date": "2026-04-24",
+    "booking_time": "19:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "pending",
+    "special_request": "",
+    "created_at": "2026-04-05T16:17:31.163Z",
+    "confirmed_at": null,
+    "cancelled_at": "2026-04-11T06:52:17.568Z",
+    "completed_at": null,
+    "updated_at": "2026-04-14T07:30:57.626Z",
+    "cancellation_reason": "",
+    "assigned_by": 10
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "4c4aeef9-7cb2-43b2-adec-41ef3a1267bc",
+  "fields": {
+    "booking_number": "BK-DEMO-004",
+    "customer": 9,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-07",
+    "booking_time": "12:30:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "",
+    "created_at": "2026-04-05T16:17:31.173Z",
+    "confirmed_at": null,
+    "cancelled_at": null,
+    "completed_at": null,
+    "updated_at": "2026-04-14T07:30:57.635Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "4eaef268-47b4-459b-9ba2-aa747b3432f5",
+  "fields": {
+    "booking_number": "BK-20260215-23519",
+    "customer": 1,
+    "restaurant": "83fd568e-4ab0-49b1-9597-2d26d3b37c93",
+    "location": "79ca2de1-e2ba-4d42-9585-5baaa73e9d33",
+    "table": "3cd7661a-e485-460f-a2be-29303a640df9",
+    "booking_date": "2026-02-19",
+    "booking_time": "18:11:33.367",
+    "number_of_guests": 46,
+    "duration_minutes": 120,
+    "status": "pending",
+    "special_request": "string",
+    "created_at": "2026-02-15T18:18:31.800Z",
+    "confirmed_at": null,
+    "cancelled_at": null,
+    "completed_at": null,
+    "updated_at": "2026-02-15T18:18:31.801Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "776f4b7a-6f69-4f70-93ff-90f85da3efef",
+  "fields": {
+    "booking_number": "BK-20260406-10699",
+    "customer": 7,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-07",
+    "booking_time": "18:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "cancelled",
+    "special_request": "",
+    "created_at": "2026-04-06T15:17:20.446Z",
+    "confirmed_at": null,
+    "cancelled_at": "2026-04-06T15:20:53.816Z",
+    "completed_at": null,
+    "updated_at": "2026-04-07T16:16:16.862Z",
+    "cancellation_reason": "",
+    "assigned_by": 10
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "77f93c18-e134-4f3e-9a48-5b8e200b1664",
+  "fields": {
+    "booking_number": "BK-20260405-17480",
+    "customer": 7,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-06",
+    "booking_time": "20:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "cancelled",
+    "special_request": "",
+    "created_at": "2026-04-05T17:56:25.471Z",
+    "confirmed_at": null,
+    "cancelled_at": "2026-04-05T18:36:24.810Z",
+    "completed_at": null,
+    "updated_at": "2026-04-05T18:36:52.875Z",
+    "cancellation_reason": "",
+    "assigned_by": 10
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "88539203-bec7-4536-8914-200ba632c62d",
+  "fields": {
+    "booking_number": "BK-DEMO-003",
+    "customer": 9,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": null,
+    "booking_date": "2026-04-19",
+    "booking_time": "19:30:00",
+    "number_of_guests": 4,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "Без орехов.",
+    "created_at": "2026-04-05T16:17:31.169Z",
+    "confirmed_at": null,
+    "cancelled_at": null,
+    "completed_at": "2026-04-14T17:54:33.998Z",
+    "updated_at": "2026-04-14T17:54:33.999Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "886a8f22-8b21-47ae-a239-13d6501b80a5",
+  "fields": {
+    "booking_number": "BK-20260405-31412",
+    "customer": 7,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": "6ea63b4c-0573-464c-8db0-561c7aedd107",
+    "booking_date": "2026-06-04",
+    "booking_time": "12:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "cancelled",
+    "special_request": "",
+    "created_at": "2026-04-05T17:54:12.266Z",
+    "confirmed_at": null,
+    "cancelled_at": "2026-04-05T17:54:17.111Z",
+    "completed_at": null,
+    "updated_at": "2026-04-05T17:54:17.111Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "ac6c7a14-4e95-41b0-9e4c-ae574f0b2e2d",
+  "fields": {
+    "booking_number": "BK-20260414-28979",
+    "customer": 7,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": "3e1696fe-fe7f-44ec-8828-20fbf06951e1",
+    "booking_date": "2026-04-15",
+    "booking_time": "12:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "cancelled",
+    "special_request": "",
+    "created_at": "2026-04-14T17:46:13.619Z",
+    "confirmed_at": "2026-04-14T17:54:29.102Z",
+    "cancelled_at": "2026-04-14T17:54:43.261Z",
+    "completed_at": null,
+    "updated_at": "2026-04-14T17:54:43.261Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "b20f83ed-7613-4405-b9c1-11b9773fe849",
+  "fields": {
+    "booking_number": "BK-20260415-71229",
+    "customer": 7,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-16",
+    "booking_time": "12:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "pending",
+    "special_request": "",
+    "created_at": "2026-04-15T03:21:26.884Z",
+    "confirmed_at": null,
+    "cancelled_at": null,
+    "completed_at": null,
+    "updated_at": "2026-04-15T03:21:26.884Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "c05422f8-73ce-4bd3-b8a1-40fd38e08574",
+  "fields": {
+    "booking_number": "BK-20260415-90487",
+    "customer": 7,
+    "restaurant": "941c77f5-2ecd-4b29-aa78-6f2ccb218782",
+    "location": "2f71048d-8a0b-4845-aa6d-81b5b7e10c96",
+    "table": "890df939-73b0-42b1-a672-2dabd5c115c4",
+    "booking_date": "2026-04-16",
+    "booking_time": "12:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "",
+    "created_at": "2026-04-15T03:05:39.155Z",
+    "confirmed_at": "2026-04-15T03:06:25.951Z",
+    "cancelled_at": null,
+    "completed_at": "2026-04-15T03:06:33.757Z",
+    "updated_at": "2026-04-15T03:06:33.757Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "da3d5a97-2730-4c48-b321-ab7486d52ab9",
+  "fields": {
+    "booking_number": "BK-20260411-14087",
+    "customer": 7,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-12",
+    "booking_time": "18:00:00",
+    "number_of_guests": 2,
+    "duration_minutes": 120,
+    "status": "cancelled",
+    "special_request": "",
+    "created_at": "2026-04-11T06:56:38.798Z",
+    "confirmed_at": null,
+    "cancelled_at": "2026-04-11T06:57:08.943Z",
+    "completed_at": null,
+    "updated_at": "2026-04-11T06:57:08.943Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "bookings.booking",
+  "pk": "e5d92c9a-afe4-473a-8a93-837ddcca117c",
+  "fields": {
+    "booking_number": "BK-DEMO-001",
+    "customer": 8,
+    "restaurant": "493ac6e8-2b3e-4c9c-a611-47abe4cbeb8f",
+    "location": "41c94577-b86d-444e-8bf8-0de5a93c0c82",
+    "table": "b02269cd-a357-498b-9763-99f828b2b83a",
+    "booking_date": "2026-04-17",
+    "booking_time": "13:00:00",
+    "number_of_guests": 3,
+    "duration_minutes": 120,
+    "status": "completed",
+    "special_request": "Детский стул, если возможно.",
+    "created_at": "2026-04-05T16:17:31.159Z",
+    "confirmed_at": null,
+    "cancelled_at": null,
+    "completed_at": "2026-04-14T17:54:40.448Z",
+    "updated_at": "2026-04-14T17:54:40.448Z",
+    "cancellation_reason": "",
+    "assigned_by": null
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 3,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 3,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 3,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 3,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 2,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 2,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 2,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 2,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 4,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 4,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 4,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 4,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 5,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 5,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 5,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 5,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 6,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 6,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 6,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 6,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add customer",
+    "content_type": 7,
+    "codename": "add_customer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change customer",
+    "content_type": 7,
+    "codename": "change_customer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete customer",
+    "content_type": 7,
+    "codename": "delete_customer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view customer",
+    "content_type": 7,
+    "codename": "view_customer"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add Ресторан",
+    "content_type": 8,
+    "codename": "add_restaurant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change Ресторан",
+    "content_type": 8,
+    "codename": "change_restaurant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete Ресторан",
+    "content_type": 8,
+    "codename": "delete_restaurant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view Ресторан",
+    "content_type": 8,
+    "codename": "view_restaurant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add Локация",
+    "content_type": 9,
+    "codename": "add_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change Локация",
+    "content_type": 9,
+    "codename": "change_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete Локация",
+    "content_type": 9,
+    "codename": "delete_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view Локация",
+    "content_type": 9,
+    "codename": "view_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add Столик",
+    "content_type": 10,
+    "codename": "add_table"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change Столик",
+    "content_type": 10,
+    "codename": "change_table"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete Столик",
+    "content_type": 10,
+    "codename": "delete_table"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view Столик",
+    "content_type": 10,
+    "codename": "view_table"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add Временной Слот",
+    "content_type": 11,
+    "codename": "add_timeslot"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change Временной Слот",
+    "content_type": 11,
+    "codename": "change_timeslot"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete Временной Слот",
+    "content_type": 11,
+    "codename": "delete_timeslot"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view Временной Слот",
+    "content_type": 11,
+    "codename": "view_timeslot"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can add restaurant staff",
+    "content_type": 12,
+    "codename": "add_restaurantstaff"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can change restaurant staff",
+    "content_type": 12,
+    "codename": "change_restaurantstaff"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can delete restaurant staff",
+    "content_type": 12,
+    "codename": "delete_restaurantstaff"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view restaurant staff",
+    "content_type": 12,
+    "codename": "view_restaurantstaff"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add booking",
+    "content_type": 13,
+    "codename": "add_booking"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can change booking",
+    "content_type": 13,
+    "codename": "change_booking"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can delete booking",
+    "content_type": 13,
+    "codename": "delete_booking"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can view booking",
+    "content_type": 13,
+    "codename": "view_booking"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add booking event log",
+    "content_type": 14,
+    "codename": "add_bookingeventlog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change booking event log",
+    "content_type": 14,
+    "codename": "change_bookingeventlog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete booking event log",
+    "content_type": 14,
+    "codename": "delete_bookingeventlog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view booking event log",
+    "content_type": 14,
+    "codename": "view_bookingeventlog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add booking notification",
+    "content_type": 15,
+    "codename": "add_bookingnotification"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change booking notification",
+    "content_type": 15,
+    "codename": "change_bookingnotification"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete booking notification",
+    "content_type": 15,
+    "codename": "delete_bookingnotification"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view booking notification",
+    "content_type": 15,
+    "codename": "view_bookingnotification"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can add Review",
+    "content_type": 16,
+    "codename": "add_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can change Review",
+    "content_type": 16,
+    "codename": "change_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can delete Review",
+    "content_type": 16,
+    "codename": "delete_review"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can view Review",
+    "content_type": 16,
+    "codename": "view_review"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "users",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "users",
+    "model": "customer"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "cafes",
+    "model": "restaurant"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "cafes",
+    "model": "location"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "cafes",
+    "model": "table"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "cafes",
+    "model": "timeslot"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "users",
+    "model": "restaurantstaff"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "bookings",
+    "model": "booking"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "bookings",
+    "model": "bookingeventlog"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "bookings",
+    "model": "bookingnotification"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 16,
+  "fields": {
+    "app_label": "cafes",
+    "model": "review"
+  }
+}
+]

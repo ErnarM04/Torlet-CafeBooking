@@ -5,6 +5,7 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from users.models import Customer, RestaurantStaff
 from users.permissions import IsStaffUser
@@ -17,6 +18,12 @@ from .serializers import (
     StaffCustomerUpdateSerializer,
 )
 from .services import BookingService
+from .staff_assistant import (
+    AssistantAPIError,
+    AssistantConfigurationError,
+    generate_assistant_reply,
+)
+from .staff_metrics import build_staff_metrics_snapshot
 
 
 @extend_schema_view(
@@ -234,3 +241,54 @@ class StaffCustomerViewSet(
         return Response(
             StaffCustomerSerializer(instance, context={"request": request}).data
         )
+
+
+@extend_schema(
+    tags=["Staff — Assistant"],
+    summary="Ask the cafe metrics assistant",
+    request={
+        "application/json": {
+            "type": "object",
+            "properties": {
+                "message": {"type": "string"},
+                "history": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "role": {"type": "string"},
+                            "content": {"type": "string"},
+                        },
+                    },
+                },
+            },
+            "required": ["message"],
+        }
+    },
+    responses={200: {"type": "object", "properties": {"reply": {"type": "string"}}}},
+)
+class StaffAssistantChatView(APIView):
+    """LLM assistant grounded in Dashboard / Analytics metrics."""
+
+    permission_classes = [IsAuthenticated, IsStaffUser]
+
+    def post(self, request):
+        message = (request.data.get("message") or "").strip()
+        if not message:
+            return Response(
+                {"detail": "message is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        history = request.data.get("history") or []
+        metrics = build_staff_metrics_snapshot()
+        try:
+            reply = generate_assistant_reply(
+                message, metrics, history=history
+            )
+        except AssistantConfigurationError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except AssistantAPIError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"reply": reply})
