@@ -1,27 +1,18 @@
 from datetime import datetime, timedelta
 
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import F
-from django.conf import settings
 
 from cafes.models import Location, Restaurant, Table
 from users.models import Customer
 
-from .models import Booking, BookingEventLog, BookingNotification
+from .exceptions import BookingConflictError
+from .models import Booking, BookingEventLog
+from .notification_service import NotificationService
 
 
 class BookingService:
-    STATUS_MESSAGES = {
-        'pending': ('Booking received', 'Your booking request has been created and is waiting for confirmation.'),
-        'confirmed': ('Booking confirmed', 'Your booking has been confirmed by the restaurant.'),
-        'seated': ('Guests seated', 'The restaurant marked your booking as seated.'),
-        'completed': ('Booking completed', 'Your visit has been marked as completed.'),
-        'cancelled': ('Booking cancelled', 'Your booking has been cancelled.'),
-        'no_show': ('Marked as no-show', 'The restaurant marked this booking as no-show.'),
-    }
-
     @classmethod
     def record_event(cls, *, booking, action, actor=None, message=''):
         return BookingEventLog.objects.create(
@@ -32,46 +23,52 @@ class BookingService:
         )
 
     @classmethod
-    def notify_customer(cls, *, booking, kind, title, message):
-        notification = BookingNotification.objects.create(
-            customer=booking.customer,
+    def notify_customer(cls, *, booking, kind, title='', message='', reason=''):
+        del title, message
+        return NotificationService.notify_customer(
             booking=booking,
             kind=kind,
-            title=title,
-            message=message,
+            reason=reason,
         )
-        user_email = booking.customer.user.email
-        if user_email:
-            send_mail(
-                subject=title,
-                message=message,
-                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', None),
-                recipient_list=[user_email],
-                fail_silently=True,
-            )
-        return notification
 
     @classmethod
     def record_status_change(cls, *, booking, status_value, actor=None, reason=''):
-        title, message = cls.STATUS_MESSAGES.get(
-            status_value,
-            ('Booking updated', 'Your booking status has been updated.'),
+        kind = (
+            'booking_created'
+            if status_value == 'pending'
+            else f'booking_{status_value}'
         )
-        if reason:
-            message = f"{message} Reason: {reason}"
 
         cls.record_event(
             booking=booking,
             actor=actor,
             action=f'booking_{status_value}',
-            message=message,
+            message=reason or f'Booking status changed to {status_value}.',
         )
-        return cls.notify_customer(
+
+        notification = cls.notify_customer(
             booking=booking,
-            kind=f'booking_{status_value}' if status_value != 'pending' else 'booking_created',
-            title=title,
-            message=message,
+            kind=kind,
+            reason=reason,
         )
+
+        if status_value in ('pending', 'confirmed'):
+            NotificationService.schedule_reminder(booking=booking)
+        elif status_value in ('cancelled', 'completed', 'no_show'):
+            NotificationService.cancel_reminder(booking=booking)
+
+        if status_value == 'pending':
+            NotificationService.notify_staff_for_booking(
+                booking=booking,
+                kind='staff_new_booking',
+            )
+        elif status_value == 'confirmed':
+            NotificationService.notify_staff_for_booking(
+                booking=booking,
+                kind='staff_booking_confirmed',
+            )
+
+        return notification
 
     @staticmethod
     def _booking_window(booking_date, booking_time, duration_minutes):
@@ -117,6 +114,74 @@ class BookingService:
             if requested_start < existing_end and existing_start < requested_end:
                 return True
         return False
+
+    @classmethod
+    def _candidate_table_ids(cls, *, location, number_of_guests):
+        return list(
+            Table.objects.filter(
+                location=location,
+                is_active=True,
+                is_available=True,
+                min_guests__lte=number_of_guests,
+                max_guests__gte=number_of_guests,
+            )
+            .order_by('max_guests', 'table_number')
+            .values_list('pk', flat=True)
+        )
+
+    @classmethod
+    def _lock_and_pick_table(
+        cls,
+        *,
+        location,
+        booking_date,
+        booking_time,
+        number_of_guests,
+        duration_minutes,
+        requested_table=None,
+    ):
+        if requested_table is not None:
+            table_ids = [requested_table.pk]
+        else:
+            table_ids = cls._candidate_table_ids(
+                location=location,
+                number_of_guests=number_of_guests,
+            )
+
+        for table_pk in table_ids:
+            table = Table.objects.select_for_update().get(pk=table_pk)
+
+            if table.location_id != location.location_id:
+                continue
+            if not table.is_active or not table.is_available:
+                if requested_table is not None:
+                    raise ValidationError('Selected table is not available.')
+                continue
+            if not table.check_capacity(number_of_guests):
+                if requested_table is not None:
+                    raise ValidationError('Selected table does not fit the guest count.')
+                continue
+            if cls.has_conflict(
+                location=location,
+                booking_date=booking_date,
+                booking_time=booking_time,
+                duration_minutes=duration_minutes,
+                table=table,
+            ):
+                if requested_table is not None:
+                    raise BookingConflictError(
+                        'Selected table is already booked for this time.',
+                    )
+                continue
+            return table
+
+        if requested_table is not None:
+            raise BookingConflictError(
+                'Selected table is already booked for this time.',
+            )
+        raise BookingConflictError(
+            'No tables are available for this time. Another guest may have just booked.',
+        )
 
     @classmethod
     def get_available_tables(
@@ -179,14 +244,6 @@ class BookingService:
         number_of_guests,
         duration_minutes=120,
     ):
-        """
-        Return table statuses for a time slot.
-
-        Statuses:
-        - inactive: table is not active or not available flag
-        - booked: conflicts with an active booking for the window OR does not fit guest count
-        - available: active + fits guest count + no conflicts
-        """
         tables = Table.objects.filter(location=location).order_by("table_number")
         out = {}
         for table in tables:
@@ -233,29 +290,15 @@ class BookingService:
         if table is not None:
             if table.location_id != location.location_id:
                 raise ValidationError('Table does not belong to the selected location.')
-            if not table.is_active or not table.is_available:
-                raise ValidationError('Selected table is not available.')
-            if not table.check_capacity(number_of_guests):
-                raise ValidationError('Selected table does not fit the guest count.')
-            if cls.has_conflict(
-                location=location,
-                booking_date=booking_date,
-                booking_time=booking_time,
-                duration_minutes=duration_minutes,
-                table=table,
-            ):
-                raise ValidationError('Selected table is already booked for this time.')
-        else:
-            available_tables = cls.get_available_tables(
-                location=location,
-                booking_date=booking_date,
-                booking_time=booking_time,
-                number_of_guests=number_of_guests,
-                duration_minutes=duration_minutes,
-            )
-            if not available_tables:
-                raise ValidationError('No tables are available for this time.')
-            table = available_tables[0]
+
+        table = cls._lock_and_pick_table(
+            location=location,
+            booking_date=booking_date,
+            booking_time=booking_time,
+            number_of_guests=number_of_guests,
+            duration_minutes=duration_minutes,
+            requested_table=table,
+        )
 
         booking = Booking.objects.create(
             customer=customer,

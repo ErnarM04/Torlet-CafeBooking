@@ -152,6 +152,13 @@ class Booking(models.Model):
 
 
 class BookingNotification(models.Model):
+    class DeliveryStatus(models.TextChoices):
+        SKIPPED = 'skipped', 'Skipped'
+        PENDING = 'pending', 'Pending'
+        DELIVERED = 'delivered', 'Delivered'
+        SENT = 'sent', 'Sent'
+        FAILED = 'failed', 'Failed'
+
     KIND_CHOICES = [
         ('booking_created', 'Booking Created'),
         ('booking_confirmed', 'Booking Confirmed'),
@@ -160,6 +167,7 @@ class BookingNotification(models.Model):
         ('booking_completed', 'Booking Completed'),
         ('booking_no_show', 'No Show'),
         ('booking_updated', 'Booking Updated'),
+        ('booking_reminder', 'Booking Reminder'),
     ]
 
     notification_id = models.UUIDField(
@@ -182,6 +190,17 @@ class BookingNotification(models.Model):
     title = models.CharField(max_length=160)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
+    in_app_status = models.CharField(
+        max_length=20,
+        choices=DeliveryStatus.choices,
+        default=DeliveryStatus.PENDING,
+    )
+    email_status = models.CharField(
+        max_length=20,
+        choices=DeliveryStatus.choices,
+        default=DeliveryStatus.SKIPPED,
+    )
+    email_sent_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -193,6 +212,96 @@ class BookingNotification(models.Model):
 
     def __str__(self):
         return f"{self.customer.user.phone_number} - {self.title}"
+
+
+class StaffNotification(models.Model):
+    class DeliveryStatus(models.TextChoices):
+        SKIPPED = 'skipped', 'Skipped'
+        DELIVERED = 'delivered', 'Delivered'
+        SENT = 'sent', 'Sent'
+        FAILED = 'failed', 'Failed'
+
+    notification_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        primary_key=True,
+        unique=True,
+    )
+    staff = models.ForeignKey(
+        'users.RestaurantStaff',
+        on_delete=models.CASCADE,
+        related_name='notifications',
+    )
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='staff_notifications',
+        null=True,
+        blank=True,
+    )
+    kind = models.CharField(max_length=40)
+    title = models.CharField(max_length=160)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    in_app_status = models.CharField(
+        max_length=20,
+        choices=DeliveryStatus.choices,
+        default=DeliveryStatus.DELIVERED,
+    )
+    email_status = models.CharField(
+        max_length=20,
+        choices=DeliveryStatus.choices,
+        default=DeliveryStatus.SKIPPED,
+    )
+    email_sent_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'staff_notifications'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['staff', 'is_read', '-created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.staff.user.phone_number} - {self.title}"
+
+
+class BookingReminder(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        SENT = 'sent', 'Sent'
+        CANCELLED = 'cancelled', 'Cancelled'
+
+    reminder_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        primary_key=True,
+        unique=True,
+    )
+    booking = models.OneToOneField(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='reminder',
+    )
+    remind_at = models.DateTimeField()
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    sent_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'booking_reminders'
+        ordering = ['remind_at']
+        indexes = [
+            models.Index(fields=['status', 'remind_at']),
+        ]
+
+    def __str__(self):
+        return f"Reminder for {self.booking.booking_number} at {self.remind_at}"
 
 
 class BookingEventLog(models.Model):

@@ -94,3 +94,22 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
+
+
+class CustomerNotificationPreferencesSerializer(serializers.Serializer):
+    notifications_enabled = serializers.BooleanField()
+    in_app_enabled = serializers.BooleanField()
+    email_enabled = serializers.BooleanField()
+    sms_enabled = serializers.BooleanField()
+    browser_push_enabled = serializers.BooleanField()
+    promotions_enabled = serializers.BooleanField()
+    reminders_enabled = serializers.BooleanField()
+
+
+class StaffNotificationPreferencesSerializer(serializers.Serializer):
+    notifications_enabled = serializers.BooleanField()
+    in_app_enabled = serializers.BooleanField()
+    email_enabled = serializers.BooleanField()
+    new_booking_alerts = serializers.BooleanField()
+    booking_confirmations = serializers.BooleanField()
+    daily_summary = serializers.BooleanField()

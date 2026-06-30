@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "../features/customer/components/Header";
+import NotificationWatcher from "../components/NotificationWatcher";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Home from "../features/customer/pages/Home";
 import Booking from "../features/customer/pages/Booking";
@@ -15,6 +16,7 @@ export default function Customer() {
   return (
     <div className="flex flex-col min-h-screen min-w-0 overflow-x-hidden">
       <Header></Header>
+      <NotificationWatcher />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="booking" element={<Booking />} />

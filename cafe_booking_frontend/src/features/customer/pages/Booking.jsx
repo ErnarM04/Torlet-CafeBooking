@@ -100,9 +100,19 @@ function Booking() {
       });
       navigate("/customer/history");
     } catch (error) {
-      setSubmitError(
-        error.response?.data?.detail || t("customer.bookingErrCreate"),
-      );
+      if (error.response?.status === 409) {
+        setSubmitError(
+          error.response?.data?.detail ||
+            "This table was just booked by someone else. Please choose another table or time.",
+        );
+        if (primaryLocation?.location_id && date && time) {
+          fetchAvailableTables(primaryLocation.location_id, date, time, guests);
+        }
+      } else {
+        setSubmitError(
+          error.response?.data?.detail || t("customer.bookingErrCreate"),
+        );
+      }
     } finally {
       setSubmitting(false);
     }

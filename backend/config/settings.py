@@ -33,17 +33,38 @@ else:
 SECRET_KEY = 'django-insecure-=am4a#l*_tx2x*b_aqb*5izvd+q@*3z64*9-s!0jchw^$yi@fp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env("DEBUG", default=True, cast=bool)
 
-ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = [
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in _env("ALLOWED_HOSTS", default="*").split(",")
+    if host.strip()
+]
+
+# Browser page origins allowed to call the API (not the API URL itself).
+_default_cors_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    # Fly.io production frontend (see fly.frontend.toml)
+    "https://torlet.fly.dev",
 ]
+_extra_cors = [
+    origin.strip()
+    for origin in _env("CORS_ALLOWED_ORIGINS", default="").split(",")
+    if origin.strip()
+]
+CORS_ALLOWED_ORIGINS = list(dict.fromkeys(_default_cors_origins + _extra_cors))
+
+# Any *.fly.dev app (frontend previews, renamed apps)
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://[a-z0-9-]+\.fly\.dev$",
+]
+
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 CORS_ALLOW_METHODS = (
     "DELETE",

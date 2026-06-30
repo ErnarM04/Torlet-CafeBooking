@@ -6,7 +6,7 @@ from rest_framework import serializers
 from cafes.models import Location, Restaurant, Table
 from users.models import Customer
 
-from .models import Booking, BookingEventLog, BookingNotification
+from .models import Booking, BookingEventLog, BookingNotification, StaffNotification
 
 
 class BookingEventLogSerializer(serializers.ModelSerializer):
@@ -37,6 +37,28 @@ class BookingNotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BookingNotification
+        fields = (
+            'notification_id',
+            'booking',
+            'booking_number',
+            'kind',
+            'title',
+            'message',
+            'is_read',
+            'created_at',
+        )
+        read_only_fields = fields
+
+
+class StaffNotificationSerializer(serializers.ModelSerializer):
+    booking_number = serializers.CharField(
+        source='booking.booking_number',
+        read_only=True,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = StaffNotification
         fields = (
             'notification_id',
             'booking',

@@ -5,11 +5,13 @@ from .staff_views import (
     StaffAssistantChatView,
     StaffBookingViewSet,
     StaffCustomerViewSet,
+    StaffNotificationViewSet,
 )
 
 router = DefaultRouter()
 router.register("bookings", StaffBookingViewSet, basename="staff-bookings")
 router.register("customers", StaffCustomerViewSet, basename="staff-customers")
+router.register("notifications", StaffNotificationViewSet, basename="staff-notifications")
 
 urlpatterns = [
     path("assistant/chat/", StaffAssistantChatView.as_view(), name="staff-assistant-chat"),

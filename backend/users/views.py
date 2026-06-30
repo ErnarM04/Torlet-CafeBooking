@@ -13,6 +13,15 @@ from .serializers import (
     RegisterSerializer,
     ProfileSerializer,
     ProfileUpdateSerializer,
+    CustomerNotificationPreferencesSerializer,
+    StaffNotificationPreferencesSerializer,
+)
+from .models import Customer, RestaurantStaff
+from .notification_prefs import (
+    get_customer_notification_prefs,
+    set_customer_notification_prefs,
+    get_staff_notification_prefs,
+    set_staff_notification_prefs,
 )
 
 @extend_schema(tags=['Auth'], summary='Login and get JWT token pair')
@@ -126,3 +135,80 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(ProfileSerializer(request.user).data)
+
+
+class NotificationPreferencesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def _resolve_profile(self, user):
+        staff = RestaurantStaff.objects.filter(user=user).first()
+        if staff is not None:
+            return "staff", staff
+        customer = Customer.objects.filter(user=user).first()
+        if customer is not None:
+            return "customer", customer
+        return None, None
+
+    @extend_schema(
+        tags=['Auth'],
+        summary='Get notification preferences',
+        responses={
+            200: inline_serializer(
+                name='NotificationPreferencesResponse',
+                fields={
+                    'role': serializers.CharField(),
+                    'preferences': serializers.JSONField(),
+                },
+            ),
+        },
+    )
+    def get(self, request):
+        role, profile = self._resolve_profile(request.user)
+        if profile is None:
+            return Response({"detail": "No notification profile found."}, status=404)
+
+        if role == "staff":
+            prefs = get_staff_notification_prefs(profile)
+            serializer = StaffNotificationPreferencesSerializer(prefs)
+        else:
+            prefs = get_customer_notification_prefs(profile)
+            serializer = CustomerNotificationPreferencesSerializer(prefs)
+
+        return Response({"role": role, "preferences": serializer.data})
+
+    @extend_schema(
+        tags=['Auth'],
+        summary='Update notification preferences',
+        request=inline_serializer(
+            name='NotificationPreferencesUpdate',
+            fields={
+                'notifications_enabled': serializers.BooleanField(required=False),
+                'in_app_enabled': serializers.BooleanField(required=False),
+                'email_enabled': serializers.BooleanField(required=False),
+                'sms_enabled': serializers.BooleanField(required=False),
+                'browser_push_enabled': serializers.BooleanField(required=False),
+                'promotions_enabled': serializers.BooleanField(required=False),
+                'reminders_enabled': serializers.BooleanField(required=False),
+                'new_booking_alerts': serializers.BooleanField(required=False),
+                'booking_confirmations': serializers.BooleanField(required=False),
+                'daily_summary': serializers.BooleanField(required=False),
+            },
+        ),
+    )
+    def patch(self, request):
+        role, profile = self._resolve_profile(request.user)
+        if profile is None:
+            return Response({"detail": "No notification profile found."}, status=404)
+
+        if role == "staff":
+            serializer = StaffNotificationPreferencesSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            prefs = set_staff_notification_prefs(profile, serializer.validated_data)
+            out = StaffNotificationPreferencesSerializer(prefs)
+        else:
+            serializer = CustomerNotificationPreferencesSerializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            prefs = set_customer_notification_prefs(profile, serializer.validated_data)
+            out = CustomerNotificationPreferencesSerializer(prefs)
+
+        return Response({"role": role, "preferences": out.data})

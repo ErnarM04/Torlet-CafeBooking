@@ -7,6 +7,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema,
 
 from users.models import Customer
 
+from .exceptions import BookingConflictError
 from .models import Booking, BookingNotification
 from .serializers import (
     BookingCancelSerializer,
@@ -79,6 +80,8 @@ class BookingViewSet(
                 duration_minutes=data['duration_minutes'],
                 special_request=data.get('special_request', ''),
             )
+        except BookingConflictError as exc:
+            return Response({'detail': str(exc.message)}, status=status.HTTP_409_CONFLICT)
         except ValidationError as exc:
             return Response({'detail': exc.messages}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -10,12 +10,13 @@ from rest_framework.views import APIView
 from users.models import Customer, RestaurantStaff
 from users.permissions import IsStaffUser
 
-from .models import Booking
+from .models import Booking, StaffNotification
 from .serializers import (
     BookingCancelSerializer,
     StaffBookingSerializer,
     StaffCustomerSerializer,
     StaffCustomerUpdateSerializer,
+    StaffNotificationSerializer,
 )
 from .services import BookingService
 from .staff_assistant import (
@@ -292,3 +293,35 @@ class StaffAssistantChatView(APIView):
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"reply": reply})
+
+
+@extend_schema_view(
+    list=extend_schema(tags=["Staff — Notifications"], summary="List staff notifications"),
+    partial_update=extend_schema(tags=["Staff — Notifications"], summary="Mark notification read"),
+)
+class StaffNotificationViewSet(
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    permission_classes = [IsAuthenticated, IsStaffUser]
+    serializer_class = StaffNotificationSerializer
+    lookup_field = "notification_id"
+    lookup_value_regex = "[0-9a-f-]{36}"
+    http_method_names = ["get", "patch", "head", "options"]
+
+    def get_queryset(self):
+        profile = RestaurantStaff.objects.filter(pk=self.request.user.pk).first()
+        if profile is None:
+            return StaffNotification.objects.none()
+        return StaffNotification.objects.select_related(
+            "booking",
+            "staff__user",
+        ).filter(staff=profile)
+
+    def partial_update(self, request, *args, **kwargs):
+        notification = self.get_object()
+        is_read = request.data.get("is_read", True)
+        notification.is_read = bool(is_read)
+        notification.save(update_fields=["is_read"])
+        return Response(self.get_serializer(notification).data)

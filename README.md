@@ -22,7 +22,7 @@ sudo docker compose up -d --build
 ### Open
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:8000/api`
-- PostgreSQL (inside container): available on the internal network. Exposed on host as `localhost:5433`.
+- PostgreSQL (inside container): available on the internal network. Exposed on host as `localhost:5434`.
 
 ### Logs
 
@@ -61,7 +61,19 @@ fly apps create torlet-frontend
 
 ```bash
 fly postgres attach --app torlet-backend torlet-db
-fly secrets set -a torlet-backend SECRET_KEY="change-me" DEBUG="False"
+fly secrets set -a torletbackend SECRET_KEY="change-me" DEBUG="False"
+```
+
+If the browser shows **CORS Missing Allow Origin**, the backend must allow your frontend origin (e.g. `https://torlet.fly.dev`). This is configured in `backend/config/settings.py` and via optional secret:
+
+```bash
+fly secrets set -a torletbackend CORS_ALLOWED_ORIGINS="https://torlet.fly.dev"
+```
+
+Redeploy the backend after changing CORS:
+
+```bash
+fly deploy -c fly.backend.toml
 ```
 
 ### 3) Deploy backend
@@ -73,7 +85,7 @@ fly deploy -c fly.backend.toml
 ### 4) Deploy frontend
 
 `fly.frontend.toml` already points API to:
-- `https://torlet-backend.fly.dev/api`
+- `https://torletbackend.fly.dev/api`
 
 Then deploy:
 

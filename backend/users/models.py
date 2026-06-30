@@ -98,6 +98,7 @@ class RestaurantStaff(models.Model):
         blank=True,
         help_text='Рестораны, которыми управляет/к которым имеет доступ сотрудник'
     )
+    notification_preferences = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

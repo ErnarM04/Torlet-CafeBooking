@@ -62,6 +62,26 @@ const useBookings = create((set, get) => ({
   notifications: [],
   notificationsLoading: false,
   notificationsError: "",
+  browserPushEnabled: false,
+
+  fetchNotificationPreferences: async () => {
+    try {
+      const response = await authorizedRequest({
+        method: "get",
+        url: `${API_BASE_URL}/auth/notification-preferences/`,
+      });
+      const prefs = response.data?.preferences || {};
+      set({
+        browserPushEnabled: Boolean(
+          prefs.browser_push_enabled && prefs.notifications_enabled && prefs.in_app_enabled,
+        ),
+      });
+      return prefs;
+    } catch {
+      set({ browserPushEnabled: false });
+      return null;
+    }
+  },
 
   fetchBookings: async () => {
     set({ loading: true, error: "" });

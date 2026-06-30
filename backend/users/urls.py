@@ -10,4 +10,5 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('test/', TestProtectedView.as_view()),
     path('profile/', ProfileView.as_view()),
+    path('notification-preferences/', NotificationPreferencesView.as_view()),
 ]

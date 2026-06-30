@@ -1,4 +1,4 @@
-app = "torlet-backend"
+app = "torletbackend"
 primary_region = "arn"
 
 [build]
